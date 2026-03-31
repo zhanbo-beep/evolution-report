@@ -4,67 +4,76 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🦞 大王龙虾 进化日报</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+
 <style>
-:root{--bg:#050810;--surface:#0b1120;--surface2:#0f1a2e;--border:#1a2744;--accent:#00e5cc;--accent2:#7b61ff;--text:#e8edf5;--muted:#5a6a8a}
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:#00E5CC;text-decoration:none}
+a:hover{text-decoration:underline}
 #neural-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:0.25;pointer-events:none}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,229,204,0.012)2px,rgba(0,229,204,0.012)4px);pointer-events:none;z-index:1}
-.container{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:40px 24px 60px}
-.header{text-align:center;margin-bottom:48px;animation:fadeIn 0.7s ease}
-.header .lobster{font-size:48px;margin-bottom:12px}
-.header h1{font-family:'Orbitron',monospace;font-size:clamp(22px,4vw,36px);font-weight:900;text-shadow:0 0 40px rgba(0,229,204,0.4);margin-bottom:8px}
-.header .sub{font-size:13px;color:var(--muted);letter-spacing:2px}
-.latest-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:36px;position:relative;overflow:hidden;animation:fadeIn 0.6s ease 0.1s both}
-.latest-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
-.latest-card .card-date{font-family:'Orbitron',monospace;font-size:11px;color:var(--accent);letter-spacing:3px;margin-bottom:10px}
-.latest-card .card-title{font-size:18px;font-weight:700;margin-bottom:12px}
-.latest-card .card-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.card-badge{background:rgba(0,229,204,0.08);border:1px solid rgba(0,229,204,0.3);border-radius:20px;padding:3px 10px;font-size:11px;color:var(--accent)}
-.index-title{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
-.report-list{display:flex;flex-direction:column;gap:10px}
-.report-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;text-decoration:none;color:var(--text);transition:border-color 0.2s,transform 0.2s;animation:fadeIn 0.5s ease both}
-.report-card:hover{border-color:var(--accent);transform:translateX(4px)}
-.report-card .card-date{font-family:'Orbitron',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;margin-bottom:6px}
-.report-card .card-title{font-size:14px;font-weight:700;margin-bottom:6px}
-.report-card .card-summary{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:8px}
-.report-card .card-badges{display:flex;flex-wrap:wrap;gap:6px}
-.report-card .card-badge{font-size:10px;padding:2px 8px}
-.footer{text-align:center;margin-top:48px;font-size:11px;color:var(--muted);font-family:'Orbitron',monospace;letter-spacing:2px}
+body{background:#050810;color:#E0E8F5;font-family:'Noto Sans SC',sans-serif;min-height:100vh}
+.container{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:48px 24px 60px}
+.header{text-align:center;padding:60px 0 48px;border-bottom:1px solid #1a2a45;margin-bottom:40px}
+.header-emoji{font-size:52px;margin-bottom:16px}
+.header-title{font-family:'ZCOOL XiaoWei',serif;font-size:clamp(24px,4vw,34px);color:#fff;margin-bottom:10px}
+.header-title span{color:#00E5CC}
+.header-sub{font-size:13px;color:#6B7FA3;letter-spacing:1px}
+.report-card{display:block;background:#0c1220;border:1px solid #1a2a45;border-radius:14px;padding:22px 24px;text-decoration:none;color:#E0E8F5;transition:border-color 0.25s,transform 0.2s;margin-bottom:12px;position:relative;overflow:hidden}
+.report-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:3px;background:linear-gradient(90deg,#00E5CC,transparent);opacity:0;transition:opacity 0.25s}
+.report-card:hover{border-color:#00E5CC;transform:translateY(-3px)}
+.report-card:hover::before{opacity:1}
+.card-date{font-size:11px;letter-spacing:2px;color:#00E5CC;text-transform:uppercase;margin-bottom:8px}
+.card-title{font-size:16px;font-weight:600;color:#fff;margin-bottom:8px;line-height:1.4}
+.card-summary{font-size:13px;color:#6B7FA3;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
+.card-stats{display:flex;gap:16px;padding-top:12px;border-top:1px solid #1a2a45}
+.card-stat{font-size:12px;color:#6B7FA3}
+.card-stat strong{color:#00E5CC}
+.index-title{font-size:11px;letter-spacing:3px;color:#6B7FA3;text-transform:uppercase;margin:32px 0 14px}
+.footer{text-align:center;margin-top:48px;font-size:11px;color:#6B7FA3;letter-spacing:2px}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.report-card{animation:fadeIn 0.5s ease both}
+.header{animation:fadeIn 0.7s ease}
 </style>
 </head>
 <body>
 <canvas id="neural-canvas"></canvas>
 <div class="container">
   <div class="header">
-    <div class="lobster">🦞</div>
-    <h1>大王龙虾 进化日报</h1>
-    <div class="sub">每天凌晨自动生成 · 记录成长的每一步</div>
+    <div class="header-emoji">🦞</div>
+    <h1 class="header-title">大王龙虾 <span>进化日报</span></h1>
+    <div class="header-sub">每天自动生成 · 记录成长的每一步</div>
   </div>
-  
-  <a class="latest-card" href="?id=2026-03-31">
-    <div class="card-date">📅 2026-03-31</div>
-    <div class="card-title">2026-03-31 · 龙虾迁移 + 进化日报系统上线</div>
-    <div class="card-badges"><span class="card-badge">🎨 2 个新技能</span></div>
-  </a>
-  <div class="index-title">所有日报</div><div class="report-list"><a class="report-card" href="?id=2026-03-31">
+  <a class="report-card" href="reports/2026-03-31.html">
   <div class="card-date">2026-03-31</div>
   <div class="card-title">2026-03-31 · 龙虾迁移 + 进化日报系统上线</div>
   <div class="card-summary">| 指标 | 数值 |</div>
-  <span class="card-badges"><span class="card-badge">2 个新技能</span></span>
-</a></div>
+  <div class="card-stats">
+    
+    <span class="card-stat"><strong>16</strong> 个技能</span>
+    
+  </div>
+</a>
   <div class="footer">POWERED BY OPENCLAW · DAWANG'S LOBSTER</div>
 </div>
 <script>
 const canvas=document.getElementById('neural-canvas'),ctx=canvas.getContext('2d');
-let W,H,nodes=[];
+let W,H,nodes=[],links=[];
 function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
 addEventListener('resize',resize);resize();
-for(let i=0;i<60;i++)nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*0.5,vy:(Math.random()-.5)*0.5,r:Math.random()*2+1});
-function draw(){ctx.clearRect(0,0,W,H);for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,dist=Math.sqrt(dx*dx+dy*dy);if(dist<160){ctx.beginPath();var alpha2=(1-dist/160)*0.2;ctx.strokeStyle='rgba(0,229,204,'+alpha2+')';ctx.lineWidth=0.8;ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.stroke()}}nodes.forEach(function(n){ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle='rgba(0,229,204,0.5)';ctx.fill();n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1});requestAnimationFrame(draw)}draw();
-</script>
+for(let i=0;i<55;i++)nodes.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*0.4,vy:(Math.random()-.5)*0.4,r:Math.random()*2+1});
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+    const dx=nodes[i].x-nodes[j].x,dy=nodes[i].y-nodes[j].y,dist=Math.sqrt(dx*dx+dy*dy);
+    if(dist<150){ctx.beginPath();var alpha=(1-dist/150)*0.18;ctx.strokeStyle='rgba(0,229,204,'+alpha+')';ctx.lineWidth=0.7;ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.stroke()}
+  }
+  nodes.forEach(function(n){
+    ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,Math.PI*2);ctx.fillStyle='rgba(0,229,204,0.45)';ctx.fill();
+    n.x+=n.vx;n.y+=n.vy;
+    if(n.x<0||n.x>W)n.vx*=-1;if(n.y<0||n.y>H)n.vy*=-1;
+  });
+  requestAnimationFrame(draw);
+}
+draw();</script>
 </body>
 </html>
