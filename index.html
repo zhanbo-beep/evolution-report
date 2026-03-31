@@ -3,233 +3,380 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🦞 大王龙虾 进化日报</title>
+<title>🦞 大王龙虾 · 进化日报</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
-
 :root {
-  --bg: #050810;
-  --surface: #0c1220;
-  --surface2: #0f1929;
-  --border: #1a2a45;
-  --accent: #00E5CC;
-  --accent-dim: #00E5CC18;
-  --text: #E0E8F5;
-  --text-dim: #6B7FA3;
+  --bg:           #0a0b0d;
+  --surface:      #111318;
+  --surface2:     #181b22;
+  --border:       #22262f;
+  --border-hover: #3a3f4e;
+  --orange:       #d97757;
+  --orange-dim:   rgba(217,119,87,0.12);
+  --blue:         #6a9bcc;
+  --blue-dim:     rgba(106,155,204,0.10);
+  --green:        #788c5d;
+  --text:         #f0ede6;
+  --text-dim:     #7a786e;
+  --text-muted:   #4a4843;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
+html { scroll-behavior: smooth; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Noto Sans SC', 'Lora', sans-serif;
   min-height: 100vh;
-  position: relative;
+  overflow-x: hidden;
 }
-
-/* Subtle grid background */
-body::before {
-  content: '';
+#neural-canvas {
   position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,229,204,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,229,204,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   z-index: 0;
-}
-
-/* Radial glow center top */
-body::after {
-  content: '';
-  position: fixed;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 800px;
-  height: 500px;
-  background: radial-gradient(ellipse at center, rgba(0,229,204,0.08) 0%, transparent 70%);
   pointer-events: none;
-  z-index: 0;
 }
-
 .container {
   position: relative;
   z-index: 1;
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 60px 24px 80px;
+  padding: 0 28px 80px;
 }
-
-.header {
+.hero {
   text-align: center;
-  padding: 60px 0 52px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 44px;
+  padding: 88px 0 64px;
   position: relative;
 }
-
-.header::after {
+.hero::after {
   content: '';
   position: absolute;
-  bottom: -1px;
-  left: 50%;
+  bottom: 0; left: 50%;
   transform: translateX(-50%);
-  width: 200px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  width: 120px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--orange), transparent);
 }
-
-.header-emoji { font-size: 52px; margin-bottom: 16px; }
-
-.header-title {
-  font-family: 'ZCOOL XiaoWei', serif;
-  font-size: clamp(26px, 4vw, 36px);
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--orange-dim);
+  border: 1px solid rgba(217,119,87,0.25);
+  color: var(--orange);
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 28px;
+}
+.hero-emoji {
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 24px rgba(217,119,87,0.4));
+}
+.hero-title {
+  font-family: 'Poppins', 'Noto Sans SC', sans-serif;
+  font-size: clamp(30px, 5vw, 52px);
+  font-weight: 700;
   color: #fff;
-  margin-bottom: 10px;
-  letter-spacing: 1px;
+  letter-spacing: -0.5px;
+  margin-bottom: 14px;
+  line-height: 1.1;
 }
-
-.header-title span { color: var(--accent); }
-
-.header-sub {
+.hero-title .accent { color: var(--orange); }
+.hero-sub {
+  font-size: 14px;
   color: var(--text-dim);
-  font-size: 13px;
+  letter-spacing: 1.5px;
+  font-weight: 300;
+}
+.section-label {
+  font-family: 'Poppins', sans-serif;
+  font-size: 10px;
   letter-spacing: 3px;
   text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 48px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
 }
-
-/* Card grid */
 .report-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 16px;
 }
-
 .report-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: 20px;
+  padding: 28px;
   text-decoration: none;
   color: var(--text);
   display: block;
-  transition: border-color 0.3s, transform 0.25s, box-shadow 0.25s;
   position: relative;
   overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
 }
-
 .report-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), rgba(0,229,204,0.3));
+  background: linear-gradient(90deg, var(--orange), var(--blue));
   opacity: 0;
   transition: opacity 0.3s;
 }
-
+.report-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle at top right, var(--orange-dim), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
 .report-card:hover {
-  border-color: rgba(0,229,204,0.4);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,229,204,0.1);
+  border-color: var(--border-hover);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(217,119,87,0.08);
 }
-
 .report-card:hover::before { opacity: 1; }
-
-.card-date {
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 10px;
-  font-weight: 500;
+.report-card:hover::after  { opacity: 1; }
+.card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
 }
-
+.card-date {
+  font-family: 'Poppins', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+.card-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.75); }
+}
 .card-title {
   font-size: 15px;
   font-weight: 600;
   color: #fff;
-  margin-bottom: 8px;
-  line-height: 1.4;
+  margin-bottom: 10px;
+  line-height: 1.5;
 }
-
 .card-summary {
   font-size: 13px;
   color: var(--text-dim);
-  line-height: 1.6;
+  line-height: 1.7;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 18px;
 }
-
 .card-stats {
   display: flex;
-  gap: 14px;
-  padding-top: 12px;
-  border-top: 1px solid var(--border);
+  gap: 16px;
   flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
-
-.card-stat { font-size: 12px; color: var(--text-dim); }
-.card-stat strong { color: var(--accent); }
-
-.index-title {
-  font-size: 11px;
-  letter-spacing: 3px;
+.card-stat {
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
   color: var(--text-dim);
-  text-transform: uppercase;
-  margin: 36px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
-
+.card-stat strong { color: var(--blue); font-weight: 600; }
 .footer {
   text-align: center;
-  margin-top: 60px;
+  margin-top: 80px;
+  font-family: 'Poppins', sans-serif;
   font-size: 11px;
-  color: var(--text-dim);
-  letter-spacing: 3px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
   text-transform: uppercase;
-  opacity: 0.6;
 }
-
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-
-.header { animation: fadeUp 0.7s ease both; }
-.report-card { animation: fadeUp 0.5s ease both; }
-.report-card:nth-child(1) { animation-delay: 0.05s; }
-.report-card:nth-child(2) { animation-delay: 0.1s; }
-.report-card:nth-child(3) { animation-delay: 0.15s; }
-.report-card:nth-child(4) { animation-delay: 0.2s; }
-.report-card:nth-child(5) { animation-delay: 0.25s; }
+.hero       { animation: fadeUp 0.8s cubic-bezier(0.22,1,0.36,1) both; }
+.report-card { animation: fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both; }
+.report-card:nth-child(1) { animation-delay: 0.1s; }
+.report-card:nth-child(2) { animation-delay: 0.18s; }
+.report-card:nth-child(3) { animation-delay: 0.26s; }
+.report-card:nth-child(4) { animation-delay: 0.34s; }
+.report-card:nth-child(5) { animation-delay: 0.42s; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 </style>
 </head>
 <body>
+
+<canvas id="neural-canvas"></canvas>
+
 <div class="container">
-  <div class="header">
-    <div class="header-emoji">🦞</div>
-    <h1 class="header-title">大王龙虾 <span>进化日报</span></h1>
-    <div class="header-sub">每天自动生成 · 记录成长的每一步</div>
+  <div class="hero">
+    <div class="hero-badge">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+        <circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="5" cy="5" r="1.5" fill="currentColor"/>
+      </svg>
+      Neural Growth System
+    </div>
+    <div class="hero-emoji">🦞</div>
+    <h1 class="hero-title">大王龙虾 <span class="accent">进化日报</span></h1>
+    <p class="hero-sub">每天自动生成 · 记录成长的每一步</p>
   </div>
 
-  <a class="report-card" href="reports/2026-03-31.html">
-  <div class="card-date">2026-03-31</div>
-  <div class="card-title">2026-03-31 · 龙虾迁移 + 进化日报系统上线</div>
-  <div class="card-summary">| 新建系统 | 4 个（进化日报、growth-tracker、AI News Run、记忆清洁工）|</div>
-  <div class="card-stats">
-    
-    <span class="card-stat"><strong>16</strong> 个技能</span>
-    
+  <div class="section-label">Recent Evolutions</div>
+  <div class="report-grid">
+    <a class="report-card" href="reports/2026-03-31.html">
+      <div class="card-top">
+        <span class="card-date">2026-03-31</span>
+        <div class="card-dot"></div>
+      </div>
+      <div class="card-title">2026-03-31 · 龙虾迁移 + 进化日报系统上线</div>
+      <div class="card-summary">| 新建系统 | 4 个（进化日报、growth-tracker、AI News Run、记忆清洁工）|</div>
+      <div class="card-stats">
+        <span class="card-stat"><strong>16</strong> skills</span>
+        <span class="card-stat"><strong>4</strong> cron jobs</span>
+        <span class="card-stat"><strong>3</strong> wiki docs</span>
+      </div>
+    </a>
   </div>
-</a>
 
   <div class="footer">Powered by OpenClaw · 大王龙虾</div>
 </div>
+
+<script>
+/* Neural Bloom — Algorithmic Art by 大王龙虾 */
+(function() {
+  const canvas = document.getElementById('neural-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], animRunning = true;
+
+  const CFG = {
+    count: 80, connectDist: 160, speed: 0.55,
+    drift: 0.18, attractCX: 0.5, nodeR: 2.8,
+    lineAlpha: 0.07,
+  };
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W; this.y = Math.random() * H;
+      this.vx = (Math.random()-0.5)*CFG.speed;
+      this.vy = (Math.random()-0.5)*CFG.speed;
+      this.ax = 0; this.ay = 0;
+      const hue = 20 + Math.random()*30;
+      const sat = 55 + Math.random()*25;
+      const lum = 55 + Math.random()*15;
+      this.color = `hsl(${hue},${sat}%,${lum}%)`;
+      this.alpha = 0.5 + Math.random()*0.5;
+      this.phase = Math.random()*Math.PI*2;
+      this.flicker = 0.92 + Math.random()*0.08;
+    }
+    update(t) {
+      const cx = W*CFG.attractCX, cy = H*0.42;
+      const dx = cx-this.x, dy = cy-this.y;
+      const distC = Math.sqrt(dx*dx+dy*dy)+1;
+      this.ax = (dx/distC)*0.018 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.ay = (dy/distC)*0.018 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.vx = (this.vx+this.ax)*0.96;
+      this.vy = (this.vy+this.ay)*0.96;
+      const spd = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+      if (spd > CFG.speed) { this.vx=(this.vx/spd)*CFG.speed; this.vy=(this.vy/spd)*CFG.speed; }
+      this.x += this.vx; this.y += this.vy;
+      if (this.x<0) this.x=W; if (this.x>W) this.x=0;
+      if (this.y<0) this.y=H; if (this.y>H) this.y=0;
+      this.flicker = 0.9+Math.sin(t*0.001+this.phase)*0.1;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha*this.flicker;
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, CFG.nodeR, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function drawConnections() {
+    ctx.save();
+    for (let i=0; i<particles.length; i++) {
+      for (let j=i+1; j<particles.length; j++) {
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < CFG.connectDist) {
+          const t = 1-d/CFG.connectDist;
+          ctx.globalAlpha = CFG.lineAlpha*t*2.5*particles[i].flicker;
+          ctx.strokeStyle = particles[i].color;
+          ctx.lineWidth = t*1.2;
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawGlow() {
+    const cx=W*0.5, cy=H*0.3;
+    const g = ctx.createRadialGradient(cx,cy,0,cx,cy,W*0.45);
+    g.addColorStop(0,'rgba(217,119,87,0.055)');
+    g.addColorStop(0.5,'rgba(106,155,204,0.025)');
+    g.addColorStop(1,'transparent');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+  }
+
+  function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function init() { resize(); particles=[]; for(let i=0;i<CFG.count;i++) particles.push(new Particle()); }
+
+  function loop(t) {
+    if (!animRunning) return;
+    ctx.clearRect(0,0,W,H);
+    const bg = ctx.createRadialGradient(W/2,H*0.35,0,W/2,H*0.35,W*0.75);
+    bg.addColorStop(0,'#0f1014'); bg.addColorStop(1,'#07080a');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    drawGlow(); drawConnections();
+    for (const p of particles) { p.update(t); p.draw(); }
+    requestAnimationFrame(loop);
+  }
+
+  document.addEventListener('visibilitychange', () => { animRunning=!document.hidden; if(animRunning) requestAnimationFrame(loop); });
+  window.addEventListener('resize', resize);
+  init(); requestAnimationFrame(loop);
+})();
+</script>
 </body>
 </html>
