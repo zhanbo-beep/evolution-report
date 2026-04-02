@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 2026-04-02 日志 · 2026.04.02</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bg: #000000;
+  --text: #ffffff;
+  --text-dim: rgba(255,255,255,0.55);
+  --text-muted: rgba(255,255,255,0.30);
+  --border: rgba(255,255,255,0.12);
+  --border-hi: rgba(255,255,255,0.22);
+  --glass-bg: rgba(255,255,255,0.07);
+  --blur: 20px;
+  --purple: #BF5AF2;
+  --blue: #0A84FF;
+  --pink: #FF375F;
+  --orange: #FF9F0A;
+  --cyan: #64D2FF;
+  --green: #30D158;
+}
+
+/* Theme: Light */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --text: #1d1d1f;
+  --text-dim: rgba(29,29,31,0.55);
+  --text-muted: rgba(29,29,31,0.35);
+  --border: rgba(0,0,0,0.10);
+  --border-hi: rgba(0,0,0,0.22);
+  --glass-bg: rgba(0,0,0,0.02);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ── Top Nav Bar ── */
+.top-nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+.top-nav-left { display: flex; align-items: center; gap: 10px; }
+.top-nav-right { display: flex; align-items: center; gap: 14px; }
+.nav-back {
+  display: flex; align-items: center; gap: 5px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--text); }
+.nav-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+.theme-toggle {
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.theme-toggle:hover {
+  border-color: var(--border-hi);
+  background: rgba(255,255,255,0.12);
+}
+[data-theme="light"] .theme-toggle:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* ── Blob Background ── */
+.blob-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.6;
+  animation: float 20s ease-in-out infinite;
+}
+.blob-1 { width: 600px; height: 600px; top: -200px; left: -150px; background: radial-gradient(circle, #5E5CE6 0%, transparent 70%); animation-delay: 0s; }
+.blob-2 { width: 500px; height: 500px; top: 30%; right: -150px; background: radial-gradient(circle, #FF375F 0%, transparent 70%); animation-delay: -5s; }
+.blob-3 { width: 450px; height: 450px; bottom: -100px; left: 20%; background: radial-gradient(circle, #0A84FF 0%, transparent 70%); animation-delay: -10s; }
+.blob-4 { width: 350px; height: 350px; bottom: 20%; right: 10%; background: radial-gradient(circle, #BF5AF2 0%, transparent 70%); animation-delay: -15s; }
+@keyframes float { 0%, 100% { transform: translate(0,0) scale(1); } 25% { transform: translate(40px,-30px) scale(1.05); } 50% { transform: translate(-20px,20px) scale(0.95); } 75% { transform: translate(30px,40px) scale(1.02); } }
+
+/* ── Neural Canvas ── */
+#neuralCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ── Rainbow Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(191,90,242,0.5) 25%,
+    rgba(10,132,255,0.5) 50%,
+    rgba(255,55,95,0.5) 75%,
+    transparent 100%);
+  border: none;
+  margin: 0 0 52px;
+}
+
+/* ── Section Label (Apple Style) ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 52px;
+}
+.stat-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange  { border-color: rgba(255,159,10,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 12px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.glass-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-1px);
+}
+
+/* ── Bug Fix Card ── */
+.bug-fix {
+  background: rgba(255,55,95,0.08);
+  border: 1px solid rgba(255,55,95,0.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.bug-fix strong { color: var(--pink); font-weight: 600; }
+.bug-fix .bug-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pink);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bug-fix .bug-title::before {
+  content: '🐛';
+  font-size: 12px;
+}
+
+/* ── Tag Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-purple { background: rgba(191,90,242,0.18); color: #BF5AF2; border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: #0A84FF; border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: #FF375F; border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: #FF9F0A; border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: #30D158; border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: #64D2FF; border: 1px solid rgba(100,210,255,0.35); }
+
+/* ── Hero Title Accent ── */
+.hero-title {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #FF9F0A 0%, #FF375F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  margin-top: 96px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .top-nav { padding: 0 16px; }
+  .nav-date { display: none; }
+}
+
+
+.report-body {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-dim);
+  margin-bottom: 28px; padding-top: 24px;
+  letter-spacing: 0.5px;
+}
+.breadcrumb a { color: var(--blue); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { opacity: 0.4; }
+.page-hero { padding-top: 24px; margin-bottom: 40px; }
+.page-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.page-date { font-size: 13px; font-weight: 500; letter-spacing: 0.5px; color: var(--text-dim); }
+.page-weekday { font-size: 13px; color: var(--text-muted); }
+.hero-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+.hero-title .accent { background: linear-gradient(135deg, #FF9F0A, #FF375F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-badge { display: flex; flex-wrap: wrap; gap: 8px; }
+.divider { height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(191,90,242,0.5) 25%, rgba(10,132,255,0.5) 50%, rgba(255,55,95,0.5) 75%, transparent 100%); border: none; margin: 0 0 52px; }
+.section { margin-bottom: 52px; }
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; }
+@media (max-width: 640px) { .cards-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid; border-radius: 16px; padding: 18px 16px; text-align: center; transition: border-color 0.2s; }
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange { border-color: rgba(255,159,10,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-num { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.3px; }
+.glass-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; transition: border-color 0.2s, transform 0.2s; }
+.glass-card:hover { border-color: var(--border-hi); transform: translateY(-1px); }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 7px; flex-wrap: wrap; }
+.card-title .emoji { flex-shrink: 0; font-size: 15px; }
+.card-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.3px; }
+.card-content { font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+.card-content p { margin-bottom: 8px; }
+.card-content p:last-child { margin-bottom: 0; }
+.card-content ul, .card-content ol { padding-left: 18px; margin-bottom: 8px; }
+.card-content li { margin-bottom: 4px; }
+.card-content strong { color: var(--text); font-weight: 600; }
+.card-content a { color: var(--blue); text-decoration: none; }
+.card-content a:hover { text-decoration: underline; }
+.card-content code { background: rgba(100,210,255,0.1); border: 1px solid rgba(100,210,255,0.2); border-radius: 4px; padding: 1px 6px; font-size: 11px; font-family: 'Courier New', monospace; color: var(--cyan); }
+.card-content table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+.card-content th { background: var(--surface); padding: 7px 10px; border: 1px solid var(--border); color: var(--text-dim); font-weight: 600; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; text-align: left; }
+.card-content td { padding: 7px 10px; border: 1px solid rgba(255,255,255,0.06); color: var(--text-dim); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-purple { background: rgba(191,90,242,0.18); color: var(--purple); border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: var(--blue); border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: var(--pink); border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: var(--orange); border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: var(--green); border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: var(--cyan); border: 1px solid rgba(100,210,255,0.35); }
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 10px; margin-bottom: 14px; margin-top: 40px; }
+.section-label:first-child { margin-top: 0; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.toc-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 40px; }
+.toc-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.footer { text-align: center; margin-top: 80px; padding: 24px 0; font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; border-top: 1px solid var(--border); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+</style>
+</head>
+<body>
+<div class="blob-canvas">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<canvas id="neuralCanvas"></canvas>
+
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a class="nav-back" href="../">← 总目录</a>
+    <span class="nav-sep" style="opacity:0.4;margin:0 6px;color:var(--text-muted);">/</span>
+    <span class="nav-current" style="font-size:12px;font-weight:500;color:var(--text-dim);">2026.04.02 · Thursday</span>
+  </div>
+  <button id="themeToggle" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);border-radius:50px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:border-color 0.2s;color:var(--text-muted);">☀️</button>
+</nav>
+
+<div class="report-body">
+  <div class="breadcrumb">
+    <a href="../">← 所有日报</a>
+    <span>/</span>
+    <span>2026.04.02</span>
+  </div>
+
+  <div class="page-hero">
+    <div class="page-eyebrow">
+      <span class="page-date">2026.04.02</span>
+      <span class="page-weekday">· Thursday</span>
+    </div>
+    <h1 class="hero-title">🦞 2026-04-02 日志<br><span class="accent">Thursday</span></h1>
+    <div class="hero-badge"><span class="badge badge-purple">🫀 2次心跳</span><span class="badge badge-orange">⚠️ 1条教训</span><span class="badge badge-green">✅ 5项完成</span></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-num purple">2</div>
+      <div class="stat-label">心跳</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-num orange">1</div>
+      <div class="stat-label">教训</div>
+    </div>
+    <div class="stat-card pink">
+      <div class="stat-num pink">15</div>
+      <div class="stat-label">Bug</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num green">5</div>
+      <div class="stat-label">完成</div>
+    </div></div>
+
+  <!-- TOC -->
+  <div class="toc-card">
+  <div class="toc-label">目录</div>
+  <div class="toc-pills"><a href="#心跳AINewsRu" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  心跳 + AI Ne</a>
+      <a href="#教训记录" class="toc-pill toc-orange" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(255,159,10,0.12);border:1px solid rgba(255,159,10,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--orange);text-decoration:none;">⚠️  教训记录</a>
+      <a href="#芯原微电子68852" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  芯原微电子（6885</a>
+      <a href="#今日量化数据" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  📊 今日量化数据</a>
+      <a href="#今日成就" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  🚀 今日成就</a>
+      <a href="#犯的错误教训" class="toc-pill toc-pink" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(255,55,95,0.12);border:1px solid rgba(255,55,95,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--pink);text-decoration:none;">🐛  🐛 犯的错误（教训</a>
+      <a href="#今日学到的新东西" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  💡 今日学到的新东</a>
+      <a href="#明日待办" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  📅 明日待办</a></div>
+</div>
+
+  <!-- Sections -->
+  <div class="section"><div class="section-label" id="心跳AINewsRu">📌 心跳 + AI News Run</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">🐛</span>腾讯新闻 API Key cron 修复 <span class="badge badge-pink">Bug Fix</span></div>
+  
+  <div class="card-content"><ul><li><strong>问题</strong>：cron isolated agent 读不到 ~/.zshrc 里的 TENCENT_NEWS_APIKEY，导致 AI Daily News Run 失败</li><li><strong>修复</strong>：在 cron 任务的消息内容里直接写入 API Key，isolated agent 会注入到执行环境</li><li><strong>命令</strong>：<code>openclaw cron edit 363c249e-3a43-4028-b61d-c266e37e8e76 --message "TENCENT_NEWS_APIKEY=eyJhbGci...; ~/.openclaw/workspace/skills/tencent-news/tencent-news-cli ai-daily"</code></li><li><strong>验证</strong>：✅ API Key 注入后 CLI 正常运行</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>SOP v1.4 生效 </div>
+  
+  <div class="card-content"><ul><li><strong>变更</strong>：取消多维表格写入，改为直接创建飞书文档到 🎫AI日报 文件夹</li><li><strong>新文档命名</strong>：<code>📰 AI Daily · YYYY-MM-DD</code></li><li><strong>文件夹</strong>：<code>JgFWfHjlUlUiXDdn8uRckcJ5nsf</code></li><li><strong>SOP 文档</strong>：https://jcnkfj0yixa1.feishu.cn/wiki/Isj5wsUMJi908Pk7OxpcWFd6nJe</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📄</span>今日 AI Daily 文档 <span class="badge badge-purple">文档</span></div>
+  
+  <div class="card-content"><ul><li><strong>文档</strong>：📰 AI Daily · 2026-04-02</li><li><strong>链接</strong>：https://jcnkfj0yixa1.feishu.cn/docx/I9nrdNi7ZoSrmuxB5dUc1TdDnsd</li><li><strong>重大发现</strong>：用户早上看到的 Tavily 结果和最终内容不一样（ Tavily 搜回来的不是今日最新），已向用户解释清楚</li></ul></div>
+</div></div></div><div class="section"><div class="section-label" id="教训记录">⚠️ 教训记录</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>- **Tavily 搜索关键词要更精准**：早上搜 "AI news April 2 2026" 搜到的是旧闻，真正重要的新闻来自腾讯新闻 </div>
+  
+  <div class="card-content"><ul><li><strong>cron 环境变量问题</strong>：isolated agent 不读 ~/.zshrc，凭证必须写进 cron 消息里</li></ul></div>
+</div></div></div><div class="section"><div class="section-label" id="芯原微电子68852">📌 芯原微电子（688521.SH）港股上市投研分析</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📄</span>PDF文档来源 <span class="badge badge-purple">文档</span></div>
+  
+  <div class="card-content"><ul><li>路径：<code>/tmp/sehk26040104032_c.pdf</code>（香港联交所申请版本，共364页）</li><li>用户上传，AI分析基于PDF原文数据</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📄</span>飞书投研文档 <span class="badge badge-purple">文档</span></div>
+  
+  <div class="card-content"><ul><li><strong>文档</strong>：📋 芯原微电子（688521.SH）港股上市申请 · 投研要素 2026-04-02</li><li><strong>链接</strong>：https://jcnkfj0yixa1.feishu.cn/docx/VGI9dNCP6olp7axD4RFcbblvn8S</li><li><strong>存放位置</strong>：📊 股票投研（NATZrfe6D5lzKXed86y4cDoSMnof）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>核心分析结论（招股书原文数据） </div>
+  
+  <div class="card-content"><table><thead><tr><th>维度</th><th>关键数据</th></tr></thead><tbody><tr><td>AI收入占比</td><td>2023年43.2% → 2024年55.9% → 2025年64.5%</td></tr><tr><td>2025年AI收入</td><td>20.3亿元（同比+56.8%）</td></tr><tr><td>在手订单</td><td>51亿元（2025年底），同比+111%，连续9个季度高位</td></tr><tr><td>新签合同</td><td>2025年60亿元，同比翻倍（+103.4%）</td></tr><tr><td>AI算力相关订单占比</td><td>超73%</td></tr><tr><td>数据处理终端在手订单占比</td><td>近60%</td></tr></tbody></table></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">✨</span>额外发现数据（首次扫描） <span class="badge badge-purple">新发现</span></div>
+  
+  <div class="card-content"><ul><li><strong>NPU IP</strong>：91家客户、140+款AI芯片、10+个市场，累计出货近2亿颗</li><li><strong>VPU IP</strong>：累计出货超2.5亿颗</li><li><strong>AI眼镜SoC平台</strong>：双芯片分布式架构 + HB-PoP封装 + 22个独立电源域 + 多级待机唤醒</li><li><strong>AI玩具</strong>：Gemma3-270M（Google开源）、总规模不足5亿参数、延迟<100ms、专为3-5岁儿童设计</li><li><strong>转码SoC</strong>：可同时编解码32路高清视频</li><li><strong>设计项目节点</strong>：104个在执行项目，60.6%在28nm~4nm，34.6%在14nm~4nm，24%在7nm~4nm</li><li><strong>RISC-V生态</strong>：芯原IP被14款RISC-V芯片采用，42家客户用其定制服务，25个项目已量产</li><li><strong>大健康平台</strong>：自研超20种健康算法（心电/血压/血糖）</li><li><strong>前五大客户</strong>：客户A = 美国上市电商/云计算/AI公司（2025年贡献5.04亿元，16%）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>PDF扫描方法（pdfplumber） </div>
+  
+  <div class="card-content"><ul><li>安装：<code>pip3 install pdfplumber --break-system-packages</code></li><li>常用命令：<code>python3 -c "import pdfplumber; pdf = pdfplumber.open('path'); [print(f'=== PAGE {i+1} ===\\n', p.extract_text()[:3000]) for i, p in enumerate(pdf.pages) if condition]"</code></li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">⚠️</span>教训 <span class="badge badge-orange">教训</span></div>
+  
+  <div class="card-content"><ul><li>之前扫描第75-130页范围不完整，漏掉了大量AI相关数据（第112-145页才是AI业务主场）</li><li>完整扫描策略：先用宽泛关键词（'AI' in text）扫全量，再针对具体段落精读</li></ul>
+<p>---</p>
+
+<p># 🦞 进化日报 · 2026-04-02（周四）</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="今日量化数据">📌 📊 今日量化数据</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>- 对话轮数：约12轮 </div>
+  
+  <div class="card-content"><ul><li>完成任务：芯原微电子港股IPO投研分析（含AI深度数据挖掘）</li><li>重大进展：完成芯原招股书PDF全文AI数据结构化提取，所有数据标有原文页码</li><li>犯的错误：2个（PDF扫描不完整 + feishu_update_doc误overwrite）</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="今日成就">📌 🚀 今日成就</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>芯原微电子深度投研分析 </div>
+  
+  <div class="card-content"><p>完成对芯原微电子（688521.SH）港股上市申请版本（364页PDF）的系统性AI数据挖掘与分析。</p>
+
+<p><strong>最关键发现（招股书原文）</strong>：</p>
+
+<ul><li>AI收入占比：2023年43.2% → 2024年55.9% → <strong>2025年64.5%</strong>，已是绝对主力</li><li>在手订单51亿元，同比翻倍+111%；新签合同60亿元，同比翻倍+103.4%</li><li>AI算力相关订单占新签超73%，数据处理终端在手订单占近60%</li><li>NPU IP：91家客户，140+款芯片，累计出货<strong>近2亿颗</strong></li><li>VPU IP：累计出货<strong>超2.5亿颗</strong></li><li>GPU IP：累计出货<strong>超20亿颗</strong></li><li>AI眼镜：双芯片架构 + 22个独立电源域 + HB-PoP封装</li><li>AI玩具：谷歌Gemma3-270M，总规模不足5亿参数，延迟<100ms</li><li>RISC-V生态：14款芯片/42家客户/25个量产项目</li></ul>
+<p><strong>文档成果</strong>：</p>
+<ul><li>📋 芯原微电子投研要素文档（含18个AI数据小节，全部标注原文页码）</li><li>链接：https://jcnkfj0yixa1.feishu.cn/docx/VGI9dNCP6olp7axD4RFcbblvn8S</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">🐛</span>腾讯新闻 Cron 修复 <span class="badge badge-pink">Bug Fix</span></div>
+  
+  <div class="card-content"><ul><li>问题根因：isolated cron agent 不读 ~/.zshrc 环境变量</li><li>修复方案：在 cron 消息内容里直接写入 API Key，agent 自动注入</li><li>验证结果：✅ CLI 正常运行，明日7:00首战</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="犯的错误教训">🐛 🐛 犯的错误（教训）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">🐛</span>错误1：PDF扫描范围不系统，漏掉大量AI数据 <span class="badge badge-pink">Bug Fix</span></div>
+  
+  <div class="card-content"><p><strong>发生了什么</strong>：早上第一次扫描时，只扫了第75-130页的部分段落，漏掉了第112-145页大量AI业务详细信息（VPU、NPU、AI眼镜、AI玩具、RISC-V生态等关键数据）。</p>
+
+<p><strong>为什么犯错</strong>：用"第75-130页范围内AI相关内容"作为筛选条件，但这个范围并不准确——真正的AI业务主场在第112-145页。</p>
+
+<p><strong>正确做法</strong>：先用宽泛关键词（<code>'AI' in text</code>）扫描全量PDF，标记所有含AI的页面，再针对具体段落精读。不要预设"AI内容在这个范围"。</p>
+
+<p><strong>这次怎么发现的</strong>：大王问"还有没有AI相关数据"，我重新全量扫描才发现遗漏。</p>
+
+<p><strong>记住</strong>：</p>
+<ul><li>PDF数据挖掘必须先用宽泛条件扫全量，不要预设范围</li><li>同一份PDF要多次扫描，每次用不同的关键词组合</li></ul>
+<p>---</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">🐛</span>错误2：飞书文档用 overwrite 模式覆盖，误删前8章内容 <span class="badge badge-pink">Bug Fix</span></div>
+  
+  <div class="card-content"><p><strong>发生了什么</strong>：两次对投研文档用 <code>feishu_update_doc(doc_id, mode="overwrite")</code> 更新，导致前8章内容被覆盖，只剩下AI深度解析部分。</p>
+
+<p><strong>为什么犯错</strong>：<code>overwrite</code> 模式是整体替换，不是追加。我在第一次更新AI解析时就用了overwrite，之后又重复使用，覆盖了原有的前8章。</p>
+
+<p><strong>正确做法</strong>：</p>
+<ul><li>增量补充内容 → 用 <code>append</code> 模式</li><li>修改特定章节 → 用 <code>replace_all</code> 或 <code>insert_after</code> 模式精确定位</li><li>只有在整篇文档重建时才用 <code>overwrite</code>，且重建前必须确认内容已备份</li></ul>
+<p><strong>这次怎么发现的</strong>：大王说"前面1-8章怎么删掉了"，我立刻发现。</p>
+
+<p><strong>记住</strong>：</p>
+<ul><li>feishu_update_doc 的 <code>overwrite</code> = 全量替换，极高风险</li><li>向飞书文档追加内容一律用 <code>append</code> 模式</li><li>overwrite 前必须先把现有内容完整读出来确认</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="今日学到的新东西">📌 💡 今日学到的新东西</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>1. **pdfplumber 扫描策略**：先用 `len(t) > 200 and ('AI' in t)` 宽泛标记所有相关页，再精读 </div>
+  
+  <div class="card-content"><p>2. <strong>feishu_update_doc 模式选择</strong>：append / insert_after / replace_all 三种模式要分清楚再用</p>
+<p>3. <strong>招股书结构</strong>：香港上市申请版本约360页，内容组织顺序通常是：概要→风险→行业→业务→财务→附注，AI相关内容分散在业务章（第112-145页）和概要/财务章（第4-9页）</p>
+
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="明日待办">📌 📅 明日待办</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>- [ ] 验证腾讯新闻cron明日7:00是否正常触发 </div>
+  
+  <div class="card-content"><ul><li>[ ] 如有新的投研需求，继续用系统性PDF扫描策略</li><li>[ ] 回顾MEMORY.md中的凭证记录，确保所有外部Key已同步写入</li></ul></div>
+</div></div></div>
+
+  <div class="footer">每日进化日报 · OpenClaw · 2026.04.02</div>
+</div>
+
+<script>(function() {
+  const canvas = document.getElementById('neuralCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], animRunning = true;
+  const CFG = { count: 40, connectDist: 130, speed: 0.35, drift: 0.12, attractCX: 0.5, nodeR: 2, lineAlpha: 0.05 };
+  const colors = ['#BF5AF2','#0A84FF','#FF375F','#64D2FF','#30D158','#FF9F0A'];
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random()*W; this.y = Math.random()*H;
+      this.vx = (Math.random()-0.5)*CFG.speed;
+      this.vy = (Math.random()-0.5)*CFG.speed;
+      this.color = colors[Math.floor(Math.random()*colors.length)];
+      this.alpha = 0.3 + Math.random()*0.5;
+      this.phase = Math.random()*Math.PI*2;
+      this.flicker = 0.9 + Math.random()*0.1;
+    }
+    update(t) {
+      const cx = W*CFG.attractCX, cy = H*0.35;
+      const dx = cx-this.x, dy = cy-this.y;
+      const distC = Math.sqrt(dx*dx+dy*dy)+1;
+      this.ax = (dx/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.ay = (dy/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.vx = (this.vx+this.ax)*0.96;
+      this.vy = (this.vy+this.ay)*0.96;
+      const spd = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+      if (spd > CFG.speed) { this.vx=(this.vx/spd)*CFG.speed; this.vy=(this.vy/spd)*CFG.speed; }
+      this.x += this.vx; this.y += this.vy;
+      if (this.x<0) this.x=W; if (this.x>W) this.x=0;
+      if (this.y<0) this.y=H; if (this.y>H) this.y=0;
+      this.flicker = 0.88+Math.sin(t*0.001+this.phase)*0.12;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha*this.flicker;
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+      ctx.beginPath(); ctx.arc(this.x,this.y,CFG.nodeR,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+  function drawConn() {
+    ctx.save();
+    for (let i=0; i<particles.length; i++) {
+      for (let j=i+1; j<particles.length; j++) {
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < CFG.connectDist) {
+          const t = 1-d/CFG.connectDist;
+          ctx.globalAlpha = CFG.lineAlpha*t*2.5*particles[i].flicker;
+          ctx.strokeStyle = particles[i].color; ctx.lineWidth = t*1.2;
+          ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+  }
+  function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function init() { resize(); particles=[]; for(let i=0;i<CFG.count;i++) particles.push(new Particle()); }
+  function loop(t) {
+    if (!animRunning) return;
+    ctx.clearRect(0,0,W,H); drawConn();
+    for (const p of particles) { p.update(t); p.draw(); }
+    requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', () => { animRunning=!document.hidden; if(animRunning) requestAnimationFrame(loop); });
+  window.addEventListener('resize', resize);
+  init(); requestAnimationFrame(loop);
+})();</script>
+<script>(function() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  btn.addEventListener('click', function() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    btn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+})();</script>
+</body>
+</html>
