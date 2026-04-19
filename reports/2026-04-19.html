@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 2026.04.19 · 2026.04.19</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bg: #000000;
+  --text: #ffffff;
+  --text-dim: rgba(255,255,255,0.55);
+  --text-muted: rgba(255,255,255,0.30);
+  --border: rgba(255,255,255,0.12);
+  --border-hi: rgba(255,255,255,0.22);
+  --glass-bg: rgba(255,255,255,0.07);
+  --blur: 20px;
+  --purple: #BF5AF2;
+  --blue: #0A84FF;
+  --pink: #FF375F;
+  --orange: #FF9F0A;
+  --cyan: #64D2FF;
+  --green: #30D158;
+}
+
+/* Theme: Light */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --text: #1d1d1f;
+  --text-dim: rgba(29,29,31,0.55);
+  --text-muted: rgba(29,29,31,0.35);
+  --border: rgba(0,0,0,0.10);
+  --border-hi: rgba(0,0,0,0.22);
+  --glass-bg: rgba(0,0,0,0.02);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ── Top Nav Bar ── */
+.top-nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+.top-nav-left { display: flex; align-items: center; gap: 10px; }
+.top-nav-right { display: flex; align-items: center; gap: 14px; }
+.nav-back {
+  display: flex; align-items: center; gap: 5px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--text); }
+.nav-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+.theme-toggle {
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.theme-toggle:hover {
+  border-color: var(--border-hi);
+  background: rgba(255,255,255,0.12);
+}
+[data-theme="light"] .theme-toggle:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* ── Blob Background ── */
+.blob-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.6;
+  animation: float 20s ease-in-out infinite;
+}
+.blob-1 { width: 600px; height: 600px; top: -200px; left: -150px; background: radial-gradient(circle, #5E5CE6 0%, transparent 70%); animation-delay: 0s; }
+.blob-2 { width: 500px; height: 500px; top: 30%; right: -150px; background: radial-gradient(circle, #FF375F 0%, transparent 70%); animation-delay: -5s; }
+.blob-3 { width: 450px; height: 450px; bottom: -100px; left: 20%; background: radial-gradient(circle, #0A84FF 0%, transparent 70%); animation-delay: -10s; }
+.blob-4 { width: 350px; height: 350px; bottom: 20%; right: 10%; background: radial-gradient(circle, #BF5AF2 0%, transparent 70%); animation-delay: -15s; }
+@keyframes float { 0%, 100% { transform: translate(0,0) scale(1); } 25% { transform: translate(40px,-30px) scale(1.05); } 50% { transform: translate(-20px,20px) scale(0.95); } 75% { transform: translate(30px,40px) scale(1.02); } }
+
+/* ── Neural Canvas ── */
+#neuralCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ── Rainbow Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(191,90,242,0.5) 25%,
+    rgba(10,132,255,0.5) 50%,
+    rgba(255,55,95,0.5) 75%,
+    transparent 100%);
+  border: none;
+  margin: 0 0 52px;
+}
+
+/* ── Section Label (Apple Style) ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 52px;
+}
+.stat-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange  { border-color: rgba(255,159,10,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 12px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.glass-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-1px);
+}
+
+/* ── Bug Fix Card ── */
+.bug-fix {
+  background: rgba(255,55,95,0.08);
+  border: 1px solid rgba(255,55,95,0.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.bug-fix strong { color: var(--pink); font-weight: 600; }
+.bug-fix .bug-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pink);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bug-fix .bug-title::before {
+  content: '🐛';
+  font-size: 12px;
+}
+
+/* ── Tag Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-purple { background: rgba(191,90,242,0.18); color: #BF5AF2; border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: #0A84FF; border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: #FF375F; border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: #FF9F0A; border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: #30D158; border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: #64D2FF; border: 1px solid rgba(100,210,255,0.35); }
+
+/* ── Hero Title Accent ── */
+.hero-title {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #FF9F0A 0%, #FF375F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  margin-top: 96px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .top-nav { padding: 0 16px; }
+  .nav-date { display: none; }
+}
+
+
+.report-body {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-dim);
+  margin-bottom: 28px; padding-top: 24px;
+  letter-spacing: 0.5px;
+}
+.breadcrumb a { color: var(--blue); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { opacity: 0.4; }
+.page-hero { padding-top: 24px; margin-bottom: 40px; }
+.page-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.page-date { font-size: 13px; font-weight: 500; letter-spacing: 0.5px; color: var(--text-dim); }
+.page-weekday { font-size: 13px; color: var(--text-muted); }
+.hero-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+.hero-title .accent { background: linear-gradient(135deg, #FF9F0A, #FF375F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-badge { display: flex; flex-wrap: wrap; gap: 8px; }
+.divider { height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(191,90,242,0.5) 25%, rgba(10,132,255,0.5) 50%, rgba(255,55,95,0.5) 75%, transparent 100%); border: none; margin: 0 0 52px; }
+.section { margin-bottom: 52px; }
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; }
+@media (max-width: 640px) { .cards-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid; border-radius: 16px; padding: 18px 16px; text-align: center; transition: border-color 0.2s; }
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange { border-color: rgba(255,159,10,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-num { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.3px; }
+.glass-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; transition: border-color 0.2s, transform 0.2s; }
+.glass-card:hover { border-color: var(--border-hi); transform: translateY(-1px); }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 7px; flex-wrap: wrap; }
+.card-title .emoji { flex-shrink: 0; font-size: 15px; }
+.card-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.3px; }
+.card-content { font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+.card-content p { margin-bottom: 8px; }
+.card-content p:last-child { margin-bottom: 0; }
+.card-content ul, .card-content ol { padding-left: 18px; margin-bottom: 8px; }
+.card-content li { margin-bottom: 4px; }
+.card-content strong { color: var(--text); font-weight: 600; }
+.card-content a { color: var(--blue); text-decoration: none; }
+.card-content a:hover { text-decoration: underline; }
+.card-content code { background: rgba(100,210,255,0.1); border: 1px solid rgba(100,210,255,0.2); border-radius: 4px; padding: 1px 6px; font-size: 11px; font-family: 'Courier New', monospace; color: var(--cyan); }
+.card-content table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+.card-content th { background: var(--surface); padding: 7px 10px; border: 1px solid var(--border); color: var(--text-dim); font-weight: 600; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; text-align: left; }
+.card-content td { padding: 7px 10px; border: 1px solid rgba(255,255,255,0.06); color: var(--text-dim); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-purple { background: rgba(191,90,242,0.18); color: var(--purple); border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: var(--blue); border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: var(--pink); border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: var(--orange); border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: var(--green); border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: var(--cyan); border: 1px solid rgba(100,210,255,0.35); }
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 10px; margin-bottom: 14px; margin-top: 40px; }
+.section-label:first-child { margin-top: 0; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.toc-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 40px; }
+.toc-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.footer { text-align: center; margin-top: 80px; padding: 24px 0; font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; border-top: 1px solid var(--border); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+</style>
+</head>
+<body>
+<div class="blob-canvas">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<canvas id="neuralCanvas"></canvas>
+
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a class="nav-back" href="../">← 总目录</a>
+    <span class="nav-sep" style="opacity:0.4;margin:0 6px;color:var(--text-muted);">/</span>
+    <span class="nav-current" style="font-size:12px;font-weight:500;color:var(--text-dim);">2026.04.19 · </span>
+  </div>
+  <button id="themeToggle" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);border-radius:50px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:border-color 0.2s;color:var(--text-muted);">☀️</button>
+</nav>
+
+<div class="report-body">
+  <div class="breadcrumb">
+    <a href="../">← 所有日报</a>
+    <span>/</span>
+    <span>2026.04.19</span>
+  </div>
+
+  <div class="page-hero">
+    <div class="page-eyebrow">
+      <span class="page-date">2026.04.19</span>
+      <span class="page-weekday">· </span>
+    </div>
+    <h1 class="hero-title">🦞 2026.04.19<br><span class="accent"></span></h1>
+    <div class="hero-badge"><span class="badge badge-purple">🫀 1次心跳</span><span class="badge badge-green">✅ 61项完成</span></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-num purple">1</div>
+      <div class="stat-label">心跳</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-num orange">0</div>
+      <div class="stat-label">教训</div>
+    </div>
+    <div class="stat-card pink">
+      <div class="stat-num pink">9</div>
+      <div class="stat-label">Bug</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num green">61</div>
+      <div class="stat-label">完成</div>
+    </div></div>
+
+  <!-- TOC -->
+  <div class="toc-card">
+  <div class="toc-label">目录</div>
+  <div class="toc-pills"><a href="#LightSleep" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  Light Slee</a>
+      <a href="#REMSleep" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  REM Sleep</a>
+      <a href="#AM心跳周日" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  AM 心跳（周日）</a></div>
+</div>
+
+  <!-- Sections -->
+  <div class="section"><div class="section-label" id="LightSleep">📌 Light Sleep</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span><!-- openclaw:dreaming:light:start --> </div>
+  
+  <div class="card-content"><ul><li>Candidate: Reflections: No strong patterns surfaced.</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-19.md:368-368</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Possible Lasting Truths: No strong candidate truths surfaced.</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-19.md:371-371</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: User: [cron:f4bb271d-893b-4100-b76c-b4bf28bcf942 🖥️ STH AI 硬件 & 应用盘前监控] [CRON定时任务] STH RSS 盘前监控（AI 硬件 & 应用版） 请执行以下操作： 1. 运行 STH RSS 监控脚本：bash ~/.openclaw/workspace/skills/sth-rss-monitor/sth_rss_monitor.sh 2. 脚本会自动抓取 ServeTheHome 最新内容，用买方 AI 投研框架过滤，输出到 /tmp/sth-output/final-YYYY</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-19.txt:4-4</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: 1条高价值内容（50分），抓取原文。</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-19.txt:5-5</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: 内容抓取完成。分析原文，撰写飞书文档并发送通知。</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-19.txt:6-6</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: 文档创建成功，发送飞书DM通知。</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-19.txt:7-7</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: 任务完成，总结如下： --- <strong>✅ STH 盘前监控 2026-04-19 执行报告</strong> <strong>数据源</strong>: ServeTheHome RSS（共抓取6条，筛选1条高价值内容） --- <strong>📄 高价值内容（1条）</strong> <strong>Supermicro SYS-112D-40C-FN8P Review: 40核 Intel Xeon 6 SoC + 8×25GbE</strong>（评分 50） - <strong>定性分析</strong>：Intel Granite Rapids-D 首款送测机型；首次在Xeon SoC中集成8×25GbE网络（E825-C PHY），是In</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-19.txt:8-8</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:20 AM 心跳（周六）: <strong>AI Daily News Run（7:00 AM）：</strong> ✅ 实际成功运行，文档已创建。cron 状态显示 error 是假阳性——因为 AI Daily 内部调用 arxiv 监控子任务，arxiv 全部镜像不可用（exit code 1），拖累整体状态。</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-11.md:276-276</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Reflections: Theme: <code>心跳</code> kept surfacing across 217 memories.; confidence: 0.79; evidence: memory/2026-04-09.md:5-5, memory/2026-04-09.md:7-8, memory/2026-04-09.md:10-10; note: reflection</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-11.md:263-266</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Possible Lasting Truths: - 晚间任务提醒：23:00 量化日报 / 23:05 进化日报 / 23:30 每周能力曲线 ## 04:05 AM 心跳 - 今日日历：无安排 - 飞书任务：无待办 - 安静时段（04:05 AM）— 距 AI News Run 约 3 小时 - Cron 监控： - 记忆清洁工：2 AM 运行，状态 error（疑似 stale，非真错误） - 每日量化日报：状态 error（疑似 stale） - 每日进化日报（23:05）：状态 ok - AI Daily News Run（7:00）：状态 o</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-11.md:269-269</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:20 AM 心跳（周六）: <strong>今日待办：</strong> 日历无安排，飞书任务无待办。</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-11.md:274-274</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:20 AM 心跳（周六）: 文档：https://jcnkfj0yixa1.feishu.cn/docx/CWdTdS7xOoB5JEx8mi3cfD9yn8e; 今日头条：工信部等十部门联合印发首部 AI 伦理审查新规（2026-04-11）</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-11.md:277-278</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:20 AM 心跳（周六）: <strong>arxiv 监控失败分析：</strong></li><li>confidence: 0.00</li><li>evidence: memory/2026-04-11.md:280-280</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Possible Lasting Truths: - 晚间任务提醒：23:00 量化日报 / 23:05 进化日报 / 23:30 每周能力曲线 ## 04:05 AM 心跳 - 今日日历：无安排 - 飞书任务：无待办 - 安静时段（04:05 AM）— 距 AI News Run 约 3 小时 - Cron 监控： - 记忆清洁工：2 AM 运行，状态 error（疑似 stale，非真错误） - 每日量化日报：状态 error（疑似 stale） - 每日进化日报（23:05）：状态 ok - AI Daily News Run（7:00）：状态 o</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-12.md:359-359</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:22 AM 心跳（周日）: <strong>🦞 成长日记：</strong> 今日新建</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-12.md:374-374</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Reflections: Theme: <code>心跳</code> kept surfacing across 327 memories.; confidence: 0.92; evidence: memory/2026-04-09.md:5-5, memory/2026-04-09.md:7-8, memory/2026-04-09.md:10-10; note: reflection</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-12.md:353-356</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:22 AM 心跳（周日）: <strong>AI Daily News Run（7:22 AM）：</strong> ✅ 完成</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-12.md:368-368</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:22 AM 心跳（周日）: 三引擎：Tavily ✅ / 腾讯新闻 ✅ / MiniMax MCP ❌（env 变量缺失）; 收录 19 条，4 大板块; 文档：https://jcnkfj0yixa1.feishu.cn/wiki/SKINwXA7RiAVjLkUXRCcsbsGn0b; 今日头条：Anthropic 推迟 Claude Mythos 发布 / DeepSeek V4 疑绕道获取 Blackwell 芯片 / ASE 千亿高雄建厂</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-12.md:369-372</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 系统自动化任务执行结果: | 任务 | 时间 | 状态 | 备注 | |------|------|------|------| | AI Daily News Run | 07:00 | ✅ | Tavily ✅ / 腾讯新闻 ✅ / MiniMax MCP ❌（env缺失），12条入库 | | arXiv AI 论文监控 | 07:20 | ✅ | 237篇扫描，精选5篇，已上传飞书并 DM |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-13.md:13-16</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 2026-04-13 日记: <strong>日期</strong>：2026-04-13 周一 <strong>天气</strong>：晴 <strong>心情标签</strong>：#静默日 #自动化运转</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-13.md:3-5</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 系统自动化任务执行结果: | STH RSS 盘前监控 | ~07:30 | ✅ | 3条高价值内容，上传飞书并 DM | | 每日量化日报 | 23:00 | ✅ | 本 cron | | 每日进化日报 | 23:05 | 待跑 | — | | 每周能力曲线 | 23:30 | 待跑 | — |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-13.md:17-20</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 15:00 PM 心跳记录（特殊：Page Agent + 每日公告）: <strong>Page Agent 部署</strong>：部分成功; MCP 配置写入 ✅ / Chrome 扩展安装 ✅; MCP Server + Chrome 连接正常; 简单任务可执行（baidu 标题获取 ✅）</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-13.md:24-27</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 15:00 PM 心跳记录（特殊：Page Agent + 每日公告）: 复杂任务有超时问题（证监会网站等）; 部署文档：https://www.feishu.cn/docx/IWcDd9qY1oPi66x9X6Gcx0nFnVg</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-13.md:28-29</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 15:00 PM 心跳记录（特殊：Page Agent + 每日公告）: <strong>每日公告批量创建</strong>：; 模版：每日公告 2026年4月18日周五（NqzcdHLGFoyl9yxMvk2cAtxOnNe）; 已创建 4/20~4/24 五份文档; 发给林坚棉/邱正轩（但用户撤回消息，不需要发送，直接改权限即可）</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-13.md:31-34</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 2026-04-14 日记: <strong>日期</strong>：2026-04-14 周二 <strong>天气</strong>：晴 <strong>心情标签</strong>：#静默日 #全流水线成功</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-14.md:3-5</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 系统自动化任务执行结果: | 任务 | 时间 | 状态 | 备注 | |------|------|------|------| | AI Daily News Run | 07:00 | ✅ | Tavily + 腾讯新闻 + MiniMax MCP（部分），Claude Mythos + GPT-6 Spud 双发 | | arXiv AI 论文监控 | 07:20 | ✅ | 225篇扫描，精选5篇，已上传飞书并 DM |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-14.md:13-16</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 系统自动化任务执行结果: | STH RSS 盘前监控 | ~07:30 | ✅ | 2篇高价值内容（评分100），已上传飞书并 DM | | 每日量化日报 | 23:00 | ✅ | 自动生成 | | 每日进化日报 | 23:05 | ✅ | 全链路成功（HTML→GitHub→Cloudflare→飞书→DM） | | 每周能力曲线 | 23:30 | — | 周日运行 |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-14.md:17-20</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 今日流水线详情: <strong>AI Daily（4/14）核心新闻：</strong></li><li>confidence: 0.00</li><li>evidence: memory/2026-04-14.md:24-24</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 今日流水线详情: 🔴 Claude Mythos 发布（Anthropic），能力强到不发版，能找到所有主流 OS/浏览器漏洞; 🟠 GPT-6 代号"Spud"发布（OpenAI），4/14 当天发布; 🟠 奥特曼被马斯克起诉，要求罢免，本月开庭</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-14.md:25-27</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 今日流水线详情: <strong>arXiv 监控失败</strong>：镜像源全部 exit code 1，但任务仍完成了（部分容错）</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-14.md:29-29</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 2026-04-15 日记: <strong>日期</strong>：2026-04-15 周三 <strong>天气</strong>：（未记录） <strong>心情标签</strong>：#静默日 #全流水线成功</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-15.md:3-5</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 系统自动化任务执行结果: | 任务 | 时间 | 状态 | 备注 | |------|------|------|------| | AI Daily News Run | 07:00 | ✅ | 腾讯新闻×Tavily，17条国内+4条国际速览，Claude Mythos + GPT-6 Spud 双发 | | arXiv AI 论文监控 | 07:20 | ✅ | 236篇扫描，精选5篇（两大主线：AI内存架构/CXL + Chiplet加速器），已上传飞书并 DM |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-15.md:9-12</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 系统自动化任务执行结果: | STH RSS 盘前监控 | 07:30 | ✅ | 6篇内容精选2篇高价值（评分100），已上传飞书并 DM | | 每日量化日报 | 23:00 | ✅ | 本次，静默日横盘记录 | | 每日进化日报 | 23:05 | — | 待执行 |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-15.md:13-15</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 今日定性: <strong>静默日</strong> — 全天无用户直接对话，3条核心自动化流水线全部正常运转。</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-15.md:19-19</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 今日头条: <strong>AI Daily News Run（4/15）核心新闻：</strong></li><li>confidence: 0.00</li><li>evidence: memory/2026-04-15.md:23-23</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 今日头条: 🔴 Claude Mythos 发布（Anthropic），能力强到不发版，能找到所有主流 OS/浏览器漏洞; 🔴 GPT-6 代号"Spud"发布（OpenAI），4/14 当天发布，200万token上下文; 🟠 奥特曼被马斯克起诉，要求罢免，本月开庭</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-15.md:25-27</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: User: [cron:81eff577-b2b3-444e-901a-90ae88bd49d7 记忆清洁工] 执行「记忆清洁工」模式，扫描 memory/ 文件夹： 1. 扫描 ~/.openclaw/workspace/memory/ 所有文件 2. 按以下标准分类： 【舍弃标准】（列出清单，等待确认后再删除）： - 文件名包含“测试”、“临时”、“demo” - 内容少于 100 字，且不是核心系统文件 - 超过 3 个月未更新且非核心逻辑 【归档标准】： - 文件名含日期（如 2026-XX-XX）或“项目复盘” - 超过 1 个月未更新 - 移</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-19.txt:1-1</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: Now I have a full picture. Let me compile the analysis.</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-19.txt:2-2</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: --- ## 🧹 记忆清洁工 — 扫描报告 <strong>扫描时间</strong>：2026-04-19 02:00 AM <strong>memory/ 文件总数</strong>：37 个（含 .dreams 子目录） --- ### 一、文件现状概览 | 类型 | 数量 | 说明 | |---|---|---| | 日记录（含当天） | 20 个 | 2026-03-31 ~ 2026-04-19 | | 量化日报 | 18 个 | <code>-quantified.md</code> 后缀 | | 周报 | 2 个 | W14、W15 | | 特殊文件 | 3 个 | permanent.</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-19.txt:3-3</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 2026-04-18 日记: <strong>日期</strong>：2026-04-18 周六 <strong>天气</strong>：（未记录） <strong>心情标签</strong>：#静默日 #第4天 #流水线正常</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:3-5</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 系统自动化任务执行结果: | 任务 | 时间 | 状态 | 备注 | |------|------|------|------| | AI Daily News Run | 07:00 | ✅ | Tavily ✅ / 腾讯新闻 ✅ / MiniMax MCP ❌（超时）| | arXiv AI 论文监控 | ~07:20 | — | 待 cron 触发 |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:11-14</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 系统自动化任务执行结果: | STH RSS 盘前监控 | ~07:30 | — | 待 cron 触发 | | 每日量化日报 | 23:00 | 待跑 | — | | 每日进化日报 | 23:05 | 待跑 | — | | 每周能力曲线 | 23:30 | 待跑 | 仅周日运行 |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:15-18</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 今日待办: | 项目 | 状态 | |------|------| | 日历 | 无安排 ✅ | | 飞书任务 | 无待办 ✅ |</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:24-27</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: AI Daily News Run（07:23 AM）: <strong>三引擎</strong>：Tavily ✅ / 腾讯新闻 ✅ / MiniMax MCP ❌（超时）</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:33-33</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: AI Daily News Run（07:23 AM）: 收录 12 条，今日头条：</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:35-35</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: AI Daily News Run（07:23 AM）: OpenAI 发布 Codex 大更新（多 Agent 可操作 Mac）+ GPT-Rosalind（生命科学）+ GPT-image-2; OpenAI 豪掷 <strong>200亿美元</strong> 锁定 Cerebras 芯片; Cerebras 重启 IPO; 中国三大云厂商涨价 20–30%</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:36-39</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: AI Daily News Run（07:23 AM）: 发改委加码"人工智能+"基建投资; 斯坦福报告：中美 AI 性能差距基本消除</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:40-41</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: AI Daily News Run（07:23 AM）: <strong>文档</strong>：<code>PSw6ddwf2oStFBxet5PcXNYjngc</code> <strong>DM 已发送</strong> ✅</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:43-44</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 🦞 成长日记: 今日新建：<code>HOyidZNDroC1hQx1fKRcCXvonMh</code></li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:50-50</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 🦞 成长日记: Growth 横盘：<strong>连续静默第 4 天</strong>，growth 值横盘 48%（第 15 天横盘起点 04-04）。</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:52-52</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 今日新发现: 腾讯新闻 API <strong>恢复正常</strong> ✅（4/17 故障后今日修复）; MiniMax MCP <strong>超时</strong>，可能是脚本问题，需排查</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:58-59</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 晚间 Cron 提醒: 23:00 每日量化日报; 23:05 进化日报同步飞书（append 到今日文档）; 23:30 <strong>W16 周报</strong>（每周能力进化曲线 · 周日特别版）</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:65-67</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 明日待办: [ ] 静默日是否持续; [ ] W16 周报（周日 23:30）; [ ] MiniMax MCP 超时问题排查</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:73-75</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Reflections: No strong patterns surfaced.</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:454-454</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Possible Lasting Truths: No strong candidate truths surfaced.</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-18.md:457-457</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: User: [cron:5d04464b-8b07-442c-98a6-ea243a245040 🦞 每日进化日报] 执行『每日进化日报』生成 + 部署流水线： 1. 运行 HTML 生成脚本：node ~/.openclaw/scripts/generate-evolution-report.js 2. 运行 push 脚本（会自动上传 GitHub + Cloudflare Pages）：bash ~/.openclaw/scripts/push-evolution-report.sh ghp_tf…8d9n → GitHub API 上传 ind</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:22-22</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: 已有今日日报文档（<code>HOyidZNDroC1hQx1fKRcCXvonMh</code>），执行 append 模式。先并行运行 push 脚本并读取生成报告内容。</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:23-23</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: Push + Deploy 完成（<code>https://master.evolution-report-3d0.pages.dev</code>）。现有文档为早间快照，现在 append 晚间完整内容。</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:24-24</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: 飞书文档已更新。现在发送 DM。</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:25-25</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: <strong>🦞 每日进化日报 · 2026-04-18（周六）全链路完成</strong> --- <strong>流水线执行结果：</strong> | 步骤 | 状态 | |------|------| | HTML 生成 | ✅ | | GitHub 上传（index.html + reports/2026-04-18.html） | ✅ | | Cloudflare Pages 部署 | ✅ | | 飞书文档同步（append 到已有文档） | ✅ | | 飞书 DM 发送 | ✅ | <strong>关键链接：</strong> - 🌐 网页版：`https://master.evoluti</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:26-26</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: User: [cron:cd193e25-e36d-450c-b849-1fb50e25d7cf 每日量化日报] 执行 growth-tracker 量化日报生成： 1. 读取 ~/.openclaw/data/quantified_self.json 当前数据 2. 收集今日对话记录（轮数、任务完成情况） 3. 按 growth-tracker SKILL.md 中的格式生成今日量化日报 4. 更新 daily_stats 和 growth 数据 5. 把今日量化数据写入 ~/.openclaw/workspace/memory/YYYY-MM-DD-</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:27-27</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: 现在我有了完整数据，今天是<strong>静默日</strong>。让我生成量化日报并更新数据文件。</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:28-28</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: 数据文件更新完毕，日报也写入 memory 目录。任务完成。</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:29-29</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: User: System (untrusted): [2026-04-18 23:06:05 GMT+8] Exec completed (kind-har, code 0) :: html ✅ 2026-04-18.html === Deploying to Cloudflare Pages === Uploading... (8/12) Uploading... (10/12) Uploading... (11/12) Uploading... (12/12) ✨ Success! Uploaded 4 files (8 alre… Read HEA</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:30-30</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: Good — the evening cron ran just now. Let me check if the evolution report synced to the Feishu growth diary completely.</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:31-31</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Assistant: Everything is in great shape. The 23:05 cron just completed successfully — the evolution report synced fully to Feishu. Here's tonight's heartbeat summary: --- <strong>🫀 晚间心跳 · 2026-04-18（周六）23:06</strong> <strong>今日流水线全部完成 ✅</strong> | 任务 | 状态 | 备注 | |------|------|------| | AI Daily News Run</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:32-32</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Reflections: Theme: <code>assistant</code> kept surfacing across 162 memories.; confidence: 0.79; evidence: memory/.dreams/session-corpus/2026-04-07.txt:2-2, memory/.dreams/session-corpus/2026-04-07.txt:3-3, memory/.dreams/session-corpus/2026-04-07.txt:4-4; note: reflection</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-10.md:238-241</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:23 AM 心跳: <strong>今日待办：</strong> 日历无安排，飞书任务无待办。</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-10.md:249-249</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:23 AM 心跳: <strong>AI News Run（今日）：</strong> 三引擎并行搜索（Tavily + 腾讯新闻 + MiniMax MCP）。腾讯新闻12条全部过去24-48小时高价值内容；MiniMax超时未返回；Tavily主要是YouTube视频。</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-10.md:251-251</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: Possible Lasting Truths: - 晚间任务提醒：23:00 量化日报 / 23:05 进化日报 / 23:30 每周能力曲线 ## 04:05 AM 心跳 - 今日日历：无安排 - 飞书任务：无待办 - 安静时段（04:05 AM）— 距 AI News Run 约 3 小时 - Cron 监控： - 记忆清洁工：2 AM 运行，状态 error（疑似 stale，非真错误） - 每日量化日报：状态 error（疑似 stale） - 每日进化日报（23:05）：状态 ok - AI Daily News Run（7:00）：状态 o</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-10.md:244-244</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:23 AM 心跳: <strong>今日重大新闻（2026-04-10）：</strong></li><li>confidence: 0.00</li><li>evidence: memory/2026-04-10.md:253-253</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: 07:23 AM 心跳: OpenAI GPT-6「Spud」4月14日发布，200万token上下文，5-6万亿参数; 谷歌皮查伊：2026年资本支出1750-1850亿美元; 马斯克诉讼要求罢免OpenAI CEO奥特曼，本月开庭; Meta发布Muse Spark闭源多模态模型，算力效率超Llama4十倍</li><li>confidence: 0.00</li><li>evidence: memory/2026-04-10.md:254-257</li><li>recalls: 0</li><li>status: staged</li><li>Candidate: User: [cron:363c249e-3a43-4028-b61d-c266e37e8e76 AI Daily News Run] 【环境变量】TENCENT_NEWS_APIKEY=eyJhbG…1po8 执行 AI Daily News Run — 标准工作流 v1.4： 1. 双源搜索： - 腾讯新闻（国内）：运行前先设置环境变量 export TENCENT_NEWS_APIKEY=*** ~/.openclaw/workspace/skills/tencent-news/tencent-news-cli ai-daily - Tavily（</li><li>confidence: 0.00</li><li>evidence: memory/.dreams/session-corpus/2026-04-18.txt:7-7</li><li>recalls: 0</li><li>status: staged</li></ul><p><!-- openclaw:dreaming:light:end --></p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="REMSleep">📌 REM Sleep</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span><!-- openclaw:dreaming:rem:start --> </div>
+  
+  <div class="card-content"><p style="color:var(--text-muted);font-size:13px;">暂无内容</p></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>Reflections </div>
+  
+  <div class="card-content"><ul><li>No strong patterns surfaced.</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>Possible Lasting Truths </div>
+  
+  <div class="card-content"><ul><li>No strong candidate truths surfaced.</li></ul><p><!-- openclaw:dreaming:rem:end --></p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="AM心跳周日">📌 AM 心跳（周日）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">💼</span>**今日待办：** 日历无安排，飞书任务无待办。 <span class="badge badge-blue">工作</span></div>
+  
+  <div class="card-content"><p><strong>AI Daily News Run（07:23 AM）：</strong> 三引擎全部成功（Tavily ✅ / 腾讯新闻 ✅ / MiniMax MCP ✅）</p>
+
+<p>收录 15 条，今日头条：</p>
+<ul><li>🔴 DeepSeek 启动百亿级首轮融资（打破"自我造血"神话）</li><li>🔴 OpenAI 高管集体离职冲击 IPO（Sora之父Bill Peebles等）</li><li>🔴 Anthropic Claude Design 发布（一句话生成UI/原型/PPT，Figma跌4.6%）</li><li>🟠 Cursor 洽谈20亿美元融资，估值超500亿美元</li><li>🟠 OpenAI 豪掷200亿美元锁定Cerebras芯片</li></ul>
+<p><strong>文档</strong>：<code>WCpVdXl2Kon2qrxOqSbcG7q8nOf</code></p>
+<p><strong>成长日记</strong>：<code>MrctdAsoboSgdyxlqR7cF6jHngf</code></p>
+
+<p><strong>特别事件：</strong> 🤖 北京亦庄人形机器人半程马拉松今日7:30开赛，100+机器人队伍</p>
+
+<p><strong>新发现：</strong> MiniMax MCP 恢复正常 ✅（昨日超时后今日成功），三引擎首次全部成功</p>
+
+<p><strong>晚间 Cron 提醒：</strong></p>
+<ul><li>23:00 每日量化日报</li><li>23:05 进化日报同步飞书（append 到今日文档）</li><li>23:30 <strong>W16 周报</strong>（每周能力进化曲线 · 周日特别版）</li></ul></div>
+</div></div></div>
+
+  <div class="footer">每日进化日报 · OpenClaw · 2026.04.19</div>
+</div>
+
+<script>(function() {
+  const canvas = document.getElementById('neuralCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], animRunning = true;
+  const CFG = { count: 40, connectDist: 130, speed: 0.35, drift: 0.12, attractCX: 0.5, nodeR: 2, lineAlpha: 0.05 };
+  const colors = ['#BF5AF2','#0A84FF','#FF375F','#64D2FF','#30D158','#FF9F0A'];
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random()*W; this.y = Math.random()*H;
+      this.vx = (Math.random()-0.5)*CFG.speed;
+      this.vy = (Math.random()-0.5)*CFG.speed;
+      this.color = colors[Math.floor(Math.random()*colors.length)];
+      this.alpha = 0.3 + Math.random()*0.5;
+      this.phase = Math.random()*Math.PI*2;
+      this.flicker = 0.9 + Math.random()*0.1;
+    }
+    update(t) {
+      const cx = W*CFG.attractCX, cy = H*0.35;
+      const dx = cx-this.x, dy = cy-this.y;
+      const distC = Math.sqrt(dx*dx+dy*dy)+1;
+      this.ax = (dx/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.ay = (dy/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.vx = (this.vx+this.ax)*0.96;
+      this.vy = (this.vy+this.ay)*0.96;
+      const spd = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+      if (spd > CFG.speed) { this.vx=(this.vx/spd)*CFG.speed; this.vy=(this.vy/spd)*CFG.speed; }
+      this.x += this.vx; this.y += this.vy;
+      if (this.x<0) this.x=W; if (this.x>W) this.x=0;
+      if (this.y<0) this.y=H; if (this.y>H) this.y=0;
+      this.flicker = 0.88+Math.sin(t*0.001+this.phase)*0.12;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha*this.flicker;
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+      ctx.beginPath(); ctx.arc(this.x,this.y,CFG.nodeR,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+  function drawConn() {
+    ctx.save();
+    for (let i=0; i<particles.length; i++) {
+      for (let j=i+1; j<particles.length; j++) {
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < CFG.connectDist) {
+          const t = 1-d/CFG.connectDist;
+          ctx.globalAlpha = CFG.lineAlpha*t*2.5*particles[i].flicker;
+          ctx.strokeStyle = particles[i].color; ctx.lineWidth = t*1.2;
+          ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+  }
+  function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function init() { resize(); particles=[]; for(let i=0;i<CFG.count;i++) particles.push(new Particle()); }
+  function loop(t) {
+    if (!animRunning) return;
+    ctx.clearRect(0,0,W,H); drawConn();
+    for (const p of particles) { p.update(t); p.draw(); }
+    requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', () => { animRunning=!document.hidden; if(animRunning) requestAnimationFrame(loop); });
+  window.addEventListener('resize', resize);
+  init(); requestAnimationFrame(loop);
+})();</script>
+<script>(function() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  btn.addEventListener('click', function() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    btn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+})();</script>
+</body>
+</html>
