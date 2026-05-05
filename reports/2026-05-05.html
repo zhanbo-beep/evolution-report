@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 2026-05-05 日志 · 2026.05.05</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bg: #000000;
+  --text: #ffffff;
+  --text-dim: rgba(255,255,255,0.55);
+  --text-muted: rgba(255,255,255,0.30);
+  --border: rgba(255,255,255,0.12);
+  --border-hi: rgba(255,255,255,0.22);
+  --glass-bg: rgba(255,255,255,0.07);
+  --blur: 20px;
+  --purple: #BF5AF2;
+  --blue: #0A84FF;
+  --pink: #FF375F;
+  --orange: #FF9F0A;
+  --cyan: #64D2FF;
+  --green: #30D158;
+}
+
+/* Theme: Light */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --text: #1d1d1f;
+  --text-dim: rgba(29,29,31,0.55);
+  --text-muted: rgba(29,29,31,0.35);
+  --border: rgba(0,0,0,0.10);
+  --border-hi: rgba(0,0,0,0.22);
+  --glass-bg: rgba(0,0,0,0.02);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ── Top Nav Bar ── */
+.top-nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+.top-nav-left { display: flex; align-items: center; gap: 10px; }
+.top-nav-right { display: flex; align-items: center; gap: 14px; }
+.nav-back {
+  display: flex; align-items: center; gap: 5px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--text); }
+.nav-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+.theme-toggle {
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.theme-toggle:hover {
+  border-color: var(--border-hi);
+  background: rgba(255,255,255,0.12);
+}
+[data-theme="light"] .theme-toggle:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* ── Blob Background ── */
+.blob-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.6;
+  animation: float 20s ease-in-out infinite;
+}
+.blob-1 { width: 600px; height: 600px; top: -200px; left: -150px; background: radial-gradient(circle, #5E5CE6 0%, transparent 70%); animation-delay: 0s; }
+.blob-2 { width: 500px; height: 500px; top: 30%; right: -150px; background: radial-gradient(circle, #FF375F 0%, transparent 70%); animation-delay: -5s; }
+.blob-3 { width: 450px; height: 450px; bottom: -100px; left: 20%; background: radial-gradient(circle, #0A84FF 0%, transparent 70%); animation-delay: -10s; }
+.blob-4 { width: 350px; height: 350px; bottom: 20%; right: 10%; background: radial-gradient(circle, #BF5AF2 0%, transparent 70%); animation-delay: -15s; }
+@keyframes float { 0%, 100% { transform: translate(0,0) scale(1); } 25% { transform: translate(40px,-30px) scale(1.05); } 50% { transform: translate(-20px,20px) scale(0.95); } 75% { transform: translate(30px,40px) scale(1.02); } }
+
+/* ── Neural Canvas ── */
+#neuralCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ── Rainbow Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(191,90,242,0.5) 25%,
+    rgba(10,132,255,0.5) 50%,
+    rgba(255,55,95,0.5) 75%,
+    transparent 100%);
+  border: none;
+  margin: 0 0 52px;
+}
+
+/* ── Section Label (Apple Style) ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 52px;
+}
+.stat-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange  { border-color: rgba(255,159,10,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 12px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.glass-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-1px);
+}
+
+/* ── Bug Fix Card ── */
+.bug-fix {
+  background: rgba(255,55,95,0.08);
+  border: 1px solid rgba(255,55,95,0.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.bug-fix strong { color: var(--pink); font-weight: 600; }
+.bug-fix .bug-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pink);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bug-fix .bug-title::before {
+  content: '🐛';
+  font-size: 12px;
+}
+
+/* ── Tag Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-purple { background: rgba(191,90,242,0.18); color: #BF5AF2; border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: #0A84FF; border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: #FF375F; border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: #FF9F0A; border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: #30D158; border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: #64D2FF; border: 1px solid rgba(100,210,255,0.35); }
+
+/* ── Hero Title Accent ── */
+.hero-title {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #FF9F0A 0%, #FF375F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  margin-top: 96px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .top-nav { padding: 0 16px; }
+  .nav-date { display: none; }
+}
+
+
+.report-body {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-dim);
+  margin-bottom: 28px; padding-top: 24px;
+  letter-spacing: 0.5px;
+}
+.breadcrumb a { color: var(--blue); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { opacity: 0.4; }
+.page-hero { padding-top: 24px; margin-bottom: 40px; }
+.page-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.page-date { font-size: 13px; font-weight: 500; letter-spacing: 0.5px; color: var(--text-dim); }
+.page-weekday { font-size: 13px; color: var(--text-muted); }
+.hero-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+.hero-title .accent { background: linear-gradient(135deg, #FF9F0A, #FF375F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-badge { display: flex; flex-wrap: wrap; gap: 8px; }
+.divider { height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(191,90,242,0.5) 25%, rgba(10,132,255,0.5) 50%, rgba(255,55,95,0.5) 75%, transparent 100%); border: none; margin: 0 0 52px; }
+.section { margin-bottom: 52px; }
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; }
+@media (max-width: 640px) { .cards-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid; border-radius: 16px; padding: 18px 16px; text-align: center; transition: border-color 0.2s; }
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange { border-color: rgba(255,159,10,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-num { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.3px; }
+.glass-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; transition: border-color 0.2s, transform 0.2s; }
+.glass-card:hover { border-color: var(--border-hi); transform: translateY(-1px); }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 7px; flex-wrap: wrap; }
+.card-title .emoji { flex-shrink: 0; font-size: 15px; }
+.card-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.3px; }
+.card-content { font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+.card-content p { margin-bottom: 8px; }
+.card-content p:last-child { margin-bottom: 0; }
+.card-content ul, .card-content ol { padding-left: 18px; margin-bottom: 8px; }
+.card-content li { margin-bottom: 4px; }
+.card-content strong { color: var(--text); font-weight: 600; }
+.card-content a { color: var(--blue); text-decoration: none; }
+.card-content a:hover { text-decoration: underline; }
+.card-content code { background: rgba(100,210,255,0.1); border: 1px solid rgba(100,210,255,0.2); border-radius: 4px; padding: 1px 6px; font-size: 11px; font-family: 'Courier New', monospace; color: var(--cyan); }
+.card-content table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+.card-content th { background: var(--surface); padding: 7px 10px; border: 1px solid var(--border); color: var(--text-dim); font-weight: 600; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; text-align: left; }
+.card-content td { padding: 7px 10px; border: 1px solid rgba(255,255,255,0.06); color: var(--text-dim); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-purple { background: rgba(191,90,242,0.18); color: var(--purple); border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: var(--blue); border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: var(--pink); border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: var(--orange); border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: var(--green); border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: var(--cyan); border: 1px solid rgba(100,210,255,0.35); }
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 10px; margin-bottom: 14px; margin-top: 40px; }
+.section-label:first-child { margin-top: 0; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.toc-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 40px; }
+.toc-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.footer { text-align: center; margin-top: 80px; padding: 24px 0; font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; border-top: 1px solid var(--border); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+</style>
+</head>
+<body>
+<div class="blob-canvas">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<canvas id="neuralCanvas"></canvas>
+
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a class="nav-back" href="../">← 总目录</a>
+    <span class="nav-sep" style="opacity:0.4;margin:0 6px;color:var(--text-muted);">/</span>
+    <span class="nav-current" style="font-size:12px;font-weight:500;color:var(--text-dim);">2026.05.05 · Tuesday</span>
+  </div>
+  <button id="themeToggle" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);border-radius:50px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:border-color 0.2s;color:var(--text-muted);">☀️</button>
+</nav>
+
+<div class="report-body">
+  <div class="breadcrumb">
+    <a href="../">← 所有日报</a>
+    <span>/</span>
+    <span>2026.05.05</span>
+  </div>
+
+  <div class="page-hero">
+    <div class="page-eyebrow">
+      <span class="page-date">2026.05.05</span>
+      <span class="page-weekday">· Tuesday</span>
+    </div>
+    <h1 class="hero-title">🦞 2026-05-05 日志<br><span class="accent">Tuesday</span></h1>
+    <div class="hero-badge"><span class="badge badge-green">✅ 3项完成</span></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-num purple">1</div>
+      <div class="stat-label">心跳</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-num orange">0</div>
+      <div class="stat-label">教训</div>
+    </div>
+    <div class="stat-card pink">
+      <div class="stat-num pink">9</div>
+      <div class="stat-label">Bug</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num green">3</div>
+      <div class="stat-label">完成</div>
+    </div></div>
+
+  <!-- TOC -->
+  <div class="toc-card">
+  <div class="toc-label">目录</div>
+  <div class="toc-pills"><a href="#AI产业链早间扫描手" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  🔍 AI产业链早间</a>
+      <a href="#服务器内存四条路线深" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  📊 服务器内存四条</a>
+      <a href="#报告编辑经验沉淀大麦" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  🖊️ 报告编辑经验</a>
+      <a href="#Cerebras晶圆" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  🔬 Cerebra</a>
+      <a href="#卓易信息688258" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  📈 卓易信息（68</a>
+      <a href="#AI产业链晚间扫描2" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  🔍 AI产业链晚间</a>
+      <a href="#2号机器人文件夹确认" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  📋 2号机器人文件</a>
+      <a href="#AI产业链扫描间隔全" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  🔧 AI产业链扫描</a></div>
+</div>
+
+  <!-- Sections -->
+  <div class="section"><div class="section-label" id="AI产业链早间扫描手">📌 🔍 AI产业链早间扫描手动重跑（09:2009:40）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>事件背景 </div>
+  
+  <div class="card-content"><ul><li>早间 Cron（08:03触发）因 DeepSeek V4 Pro API 超时导致失败（15分钟执行时限耗尽）</li><li>根因：<code>failover decision: reason=timeout from=deepseek/deepseek-v4-pro</code></li><li>大麦昨晚修改了 SOP（v2.1，搜索轮次从~18扩到54轮），54轮搜索时间接近cron 15分钟超时线</li><li>加上 DeepSeek API 在08:18抽风，双重因素导致失败</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>手动重跑结果 </div>
+  
+  <div class="card-content"><ul><li>54轮全量完成：46成功 / 9个429 / 0失败</li><li>原始数据251条 → 去重25条 → AI相关核心12条</li><li>耗时约12分钟</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>交付物 </div>
+  
+  <div class="card-content"><ul><li>📄 飞书文档：https://www.feishu.cn/docx/W2mpdpKB3oeDs2xEZefcbETanib</li><li>📊 飞书表格：JVt2biLK5argcysg97dc2WRPnlh / tblrkko2cIqYnzxc（已追加12行）</li><li>📝 原始数据：/tmp/ai-chain-raw-2026-05-05.txt</li><li>📋 搜索日志：/tmp/ai-chain-scan-log.txt</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>今日核心发现（12条） </div>
+  
+  <div class="card-content"><p>1. 🔥🔥🔥 高盛：寒武纪目标价2406元（Q1营收29.2亿超预期61%）</p>
+<p>2. 🔥🔥🔥 海外云厂Capex上修：2026 8050亿 / 2027 1.16万亿</p>
+<p>3. 🔥🔥🔥 SK海力士Q1创历史：净利润272.7亿美元（净利率77%）</p>
+<p>4. 🔥🔥🔥 联发科ASIC翻倍：10亿→20亿美元</p>
+<p>5. 🔥🔥🔥 AMD目标价311→465美元</p>
+<p>6. 🔥🔥🔥 Semi-Analysis：AI算力从成本→价值定价</p>
+<p>7. 🔥🔥🔥 AI电源链全面爆发（台达热管理一年40倍）</p>
+<p>8. 🔥🔥 Claude ARR 440亿+亚马逊云深度绑定</p>
+<p>9. 🔥🔥 光模块Capex占比<5%→20%</p>
+<p>10. 🔥🔥 先进封装/测试设备景气加速</p>
+<p>11. 🔥🔥 豆包付费验证国内Token经济学</p>
+<p>12. 🔥🔥 国联民生"一芯二模三云"框架</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>⚠️ 风险评估：54轮SOP接近cron超时线 </div>
+  
+  <div class="card-content"><ul><li>54轮 × ~13秒（API+延迟）= ~12分钟</li><li>Cron 15分钟时限：正常情况勉强跑完，API稍有延迟就超时</li><li>建议：要么缩短搜索轮次，要么延长cron超时配置</li></ul></div>
+</div></div></div><div class="section"><div class="section-label" id="服务器内存四条路线深">📌 📊 服务器内存四条路线深度报告（14:0017:00）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>背景 </div>
+  
+  <div class="card-content"><p>大麦发来一份详细的服务器内存产业链分析，涉及 SOCAMM 2 / MRDIMM / 标准 RDIMM (DDR5) / CXL 2.0 四条路线并行的系统性重塑。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>Alpha派搜索 </div>
+  
+  <div class="card-content"><ul><li>搜索关键词：澜起科技、聚辰股份、SOCAMM MRDIMM 服务器内存、CXL 内存池化、佰维存储 江波龙、德明利 香农芯创（串行，每条间隔3-5秒）</li><li>时间范围：近三个月（2026-02-05 ~ 2026-05-05）</li><li>数据类型：comment + roadShow</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>交付物 </div>
+  
+  <div class="card-content"><ul><li>📄 飞书文档：https://www.feishu.cn/docx/LgivdpK8HoLCB9xs4tVc1Nnenid（2号机器人文件夹 RRWTfpssulKSx6dnqeLcVjrmn8g）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>核心结论 </div>
+  
+  <div class="card-content"><ul><li>澜起科技：唯一横跨 RCD + MRCD/MDB + CXL 三条路线的标的，高盛目标价 A股227/H股268港元</li><li>聚辰股份：SPD + VPD 双线，"小澜起"，Q1增速放缓至7.25%</li><li>SOCAMM 2 无需 RCD/SPD → 传统接口芯片厂商零受益</li><li>CXL MXC 送样阶段（2026-04-03 投关纪要），量产等 Diamond Rapids</li><li>存储模组厂：佰维/江波龙/德明利受益涨价周期，香农芯创是分销商转型</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>重要出处核实 </div>
+  
+  <div class="card-content"><ul><li>澜起 CXL MXC "送样测试"：2026-04-03 投关纪要（公告编号 2026-002）</li><li>聚辰"AI服务器20根DDR5（通用2倍）"：2026-03-23 年报解读会</li><li>CXL 2.0 首次适配 Diamond Rapids：财通证券 2026-04-13</li><li>SOCAMM 2 "需看谁拿英伟达认证"：无出处，是推断，应删</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="报告编辑经验沉淀大麦">📌 🖊️ 报告编辑经验沉淀（大麦多次手动修改）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">⚠️</span>核心教训 <span class="badge badge-orange">教训</span></div>
+  
+  <div class="card-content"><p>1. <strong>术语每次都加括号解释</strong>：RCD（信号总指挥）/ SPD（内存的身份证+说明书）/ MRDIMM（高配DDR5内存）——全文每次出现都重复加注，不让读者往回翻</p>
+<p>2. <strong>黄色高亮只标投资结论</strong>："澜起科技的产品""聚辰股份的产品""可增厚利润约45亿""送样阶段，等待量产"——不标术语，只标 actionable 信号</p>
+<p>3. <strong>"利空"改"产品"</strong>：更专业克制，不自替读者下结论</p>
+<p>4. <strong>表头自带括号翻译</strong>：表格不再用裸术语</p>
+<p>5. <strong>关键数字在总结段重复</strong>：45亿/40-80亿 多处出现</p>
+<p>6. <strong>VPD 生动比喻</strong>："身份证+体检报告+运维手册三合一"比"新一代企业级存储模组标配"强十倍</p>
+<p>7. <strong>正文+附录分工</strong>：正文给懂的人看投资结论，附录给不懂的人系统科普</p>
+<p>8. <strong>表格里加具体数量</strong>：MRDIMM = 1颗MRCD + 10颗MDB + 1颗SPD，配比就是价值信号</p>
+<p>9. <strong>飞书文档全用列表不用表格</strong>：表格→lark-table→读不回也改不动。所有飞书文档输出一律层级列表</p>
+<p>10. <strong>出处规则</strong>：内部报告必须带出处；外发版本另做一版去出处的（不默认删）</p>
+
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="Cerebras晶圆">📌 🔬 Cerebras 晶圆级芯片深度分析（17:0018:30）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>背景 </div>
+  
+  <div class="card-content"><p>天风海外科技发布 Cerebras IPO 分析，涉及晶圆级芯片对 HBM/CoWoS/CUDA 生态的颠覆性影响。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>Alpha派搜索 </div>
+  
+  <div class="card-content"><ul><li>6轮串行搜索（每轮 sleep 3-5秒随机），无429</li><li>原始数据保存路径：<code>~/.openclaw/workspace/data/alphapai/</code></li><li>文件名：alphapai_cerebras_raw1.txt ~ raw6.txt（共6个文件）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>交付物 </div>
+  
+  <div class="card-content"><ul><li>📄 飞书文档：https://www.feishu.cn/docx/VWPedSA7DoiMlixkWhrcR8mkngd（1号机器人文件夹 VUG7f8lf3l4PmQd9rJAc9QqQnNL）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>核心发现 </div>
+  
+  <div class="card-content"><ul><li>Cerebras用一整张12英寸晶圆做芯片，片上SRAM 44GB，带宽21PB/s（B200的2600倍），推理速度15倍</li><li>最大客户 OpenAI，3年750MW/200亿美元订单，预付10亿</li><li>台积电独供：打破掩膜版极限 + InFO_SoW 封装 + 良率冗余修复</li><li><strong>A股无直接受益标的</strong>：北京君正是"概念映射非真实受益"——做独立小SRAM芯片，跟Cerebras片上集成 SRAM 是完全不同物种</li><li>天风远期估值：2027年25亿美元利润 → 750亿美元估值（30X PE）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>Alpha派原始数据存储规则 </div>
+  
+  <div class="card-content"><ul><li>永久路径：<code>workspace/data/alphapai/</code></li><li>/tmp/ 重启清空，以后所有 Alpha派召回数据直接落这里</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="卓易信息688258">📌 📈 卓易信息（688258）Q1速评（18:40）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>- Q1营收8752万，归母净利润5947万，净利率68%，利润追平2025全年 </div>
+  
+  <div class="card-content"><ul><li>EazyDevelop 订阅涨价75%-120%（2026-03-25），订单突破4200万</li><li>广发定性：国内少数跨架构BIOS+BMC固件厂商 + AI IDE工具，类似Cursor模式</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="AI产业链晚间扫描2">📌 🔍 AI产业链晚间扫描 (21:03 cron)</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">🐛</span>执行结果：失败 <span class="badge badge-pink">Bug Fix</span></div>
+  
+  <div class="card-content"><ul><li><strong>Alpha派 API 全面500000内部错误</strong></li><li>18轮串行全部失败后自动终止（满足≥18轮终止条件）</li><li>时间窗口: 2026-05-05 08:00 → 21:03</li><li>成功: 0轮 | 429: 0轮 | 500错误: 18轮</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>模式确认 </div>
+  
+  <div class="card-content"><p><strong>第四次晚高峰宕机</strong>（05-02/05-03/05-05连续），晚间21:00后 Alpha派 recall 接口持续 500000。</p>
+<p>早间API正常，晚间规律性故障。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>是否启动备用方案 </div>
+  
+  <div class="card-content"><p>未启动三引擎备用搜索。如需晚间增量覆盖，可后续开启。</p>
+
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="2号机器人文件夹确认">📌 📋 2号机器人文件夹确认</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>- Token：RRWTfpssulKSx6dnqeLcVjrmn8g </div>
+  
+  <div class="card-content"><ul><li>MEMORY.md 此前只记录了1号机器人文件夹，今天确认并补上</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="AI产业链扫描间隔全">📌 🔧 AI产业链扫描间隔全量修改（19:3020:00）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>改动 </div>
+  
+  <div class="card-content"><p>大麦要求：所有API调用间隔从 <strong>8-10秒 → 3-5秒</strong>（全局统一）</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>修改文件清单（零遗漏验证） </div>
+  
+  <div class="card-content"><table><thead><tr><th>文件</th><th>位置</th><th>改动</th></tr></thead><tbody><tr><td>`tasks/ai-chain-daily-scan.md`</td><td>搜索序列部分</td><td>8-10秒→3-5秒，`sleep $((3+RANDOM%3))`</td></tr><tr><td>飞书 SOP `NghCdEfppoZQ5Pxmqf2cwOIhnle`</td><td>第三部分</td><td>间隔3-5秒，预计总耗时5-7分钟</td></tr><tr><td>同上</td><td>第七部分</td><td>防限流间隔改为3-5秒</td></tr><tr><td>同上</td><td>第八部分</td><td>铁律第2条3-5秒</td></tr><tr><td>MEMORY.md</td><td>多处</td><td>已经是3-5秒，无需改</td></tr><tr><td>AGENTS.md</td><td>防限流纪律段</td><td>已经是3-5秒，无需改</td></tr><tr><td>飞书 SOP 第九部分</td><td>「429累积触发→间隔拉到10秒以上」</td><td>保留不改（极端情况应对）</td></tr></tbody></table></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>影响估算 </div>
+  
+  <div class="card-content"><ul><li>旧（8-10秒）：54轮 × ~13秒 = ~12分钟 → 逼近cron 15分钟超时线</li><li>新（3-5秒）：54轮 × ~8秒 = ~7分钟 → 缓冲充裕</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>Alpha派底层调用发现 </div>
+  
+  <div class="card-content"><ul><li><code>alphapai_client.py</code> CLI 本质就是 POST 到 <code>https://open-api.rabyte.cn/alpha/open-api/v1/paipai/recall-data</code></li><li>Header: <code>app-agent: <api_key></code></li><li>Body: <code>{"query":"...","recallType":["..."],"startTime":"...","endTime":"..."}</code></li><li>下次可直接用 curl 循环替代 Python CLI + bash 两层包装，再省 1-2 分钟</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>用户原话 </div>
+  
+  <div class="card-content"><p>"间隔改为随机3-5秒，知道吧？所有的记忆里面全部把它改掉"</p>
+</div>
+</div></div></div>
+
+  <div class="footer">每日进化日报 · OpenClaw · 2026.05.05</div>
+</div>
+
+<script>(function() {
+  const canvas = document.getElementById('neuralCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], animRunning = true;
+  const CFG = { count: 40, connectDist: 130, speed: 0.35, drift: 0.12, attractCX: 0.5, nodeR: 2, lineAlpha: 0.05 };
+  const colors = ['#BF5AF2','#0A84FF','#FF375F','#64D2FF','#30D158','#FF9F0A'];
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random()*W; this.y = Math.random()*H;
+      this.vx = (Math.random()-0.5)*CFG.speed;
+      this.vy = (Math.random()-0.5)*CFG.speed;
+      this.color = colors[Math.floor(Math.random()*colors.length)];
+      this.alpha = 0.3 + Math.random()*0.5;
+      this.phase = Math.random()*Math.PI*2;
+      this.flicker = 0.9 + Math.random()*0.1;
+    }
+    update(t) {
+      const cx = W*CFG.attractCX, cy = H*0.35;
+      const dx = cx-this.x, dy = cy-this.y;
+      const distC = Math.sqrt(dx*dx+dy*dy)+1;
+      this.ax = (dx/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.ay = (dy/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.vx = (this.vx+this.ax)*0.96;
+      this.vy = (this.vy+this.ay)*0.96;
+      const spd = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+      if (spd > CFG.speed) { this.vx=(this.vx/spd)*CFG.speed; this.vy=(this.vy/spd)*CFG.speed; }
+      this.x += this.vx; this.y += this.vy;
+      if (this.x<0) this.x=W; if (this.x>W) this.x=0;
+      if (this.y<0) this.y=H; if (this.y>H) this.y=0;
+      this.flicker = 0.88+Math.sin(t*0.001+this.phase)*0.12;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha*this.flicker;
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+      ctx.beginPath(); ctx.arc(this.x,this.y,CFG.nodeR,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+  function drawConn() {
+    ctx.save();
+    for (let i=0; i<particles.length; i++) {
+      for (let j=i+1; j<particles.length; j++) {
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < CFG.connectDist) {
+          const t = 1-d/CFG.connectDist;
+          ctx.globalAlpha = CFG.lineAlpha*t*2.5*particles[i].flicker;
+          ctx.strokeStyle = particles[i].color; ctx.lineWidth = t*1.2;
+          ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+  }
+  function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function init() { resize(); particles=[]; for(let i=0;i<CFG.count;i++) particles.push(new Particle()); }
+  function loop(t) {
+    if (!animRunning) return;
+    ctx.clearRect(0,0,W,H); drawConn();
+    for (const p of particles) { p.update(t); p.draw(); }
+    requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', () => { animRunning=!document.hidden; if(animRunning) requestAnimationFrame(loop); });
+  window.addEventListener('resize', resize);
+  init(); requestAnimationFrame(loop);
+})();</script>
+<script>(function() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  btn.addEventListener('click', function() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    btn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+})();</script>
+</body>
+</html>
