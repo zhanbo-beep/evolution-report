@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 2026-05-12 会话记录 · 2026.05.12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bg: #000000;
+  --text: #ffffff;
+  --text-dim: rgba(255,255,255,0.55);
+  --text-muted: rgba(255,255,255,0.30);
+  --border: rgba(255,255,255,0.12);
+  --border-hi: rgba(255,255,255,0.22);
+  --glass-bg: rgba(255,255,255,0.07);
+  --blur: 20px;
+  --purple: #BF5AF2;
+  --blue: #0A84FF;
+  --pink: #FF375F;
+  --orange: #FF9F0A;
+  --cyan: #64D2FF;
+  --green: #30D158;
+}
+
+/* Theme: Light */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --text: #1d1d1f;
+  --text-dim: rgba(29,29,31,0.55);
+  --text-muted: rgba(29,29,31,0.35);
+  --border: rgba(0,0,0,0.10);
+  --border-hi: rgba(0,0,0,0.22);
+  --glass-bg: rgba(0,0,0,0.02);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ── Top Nav Bar ── */
+.top-nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+.top-nav-left { display: flex; align-items: center; gap: 10px; }
+.top-nav-right { display: flex; align-items: center; gap: 14px; }
+.nav-back {
+  display: flex; align-items: center; gap: 5px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--text); }
+.nav-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+.theme-toggle {
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.theme-toggle:hover {
+  border-color: var(--border-hi);
+  background: rgba(255,255,255,0.12);
+}
+[data-theme="light"] .theme-toggle:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* ── Blob Background ── */
+.blob-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.6;
+  animation: float 20s ease-in-out infinite;
+}
+.blob-1 { width: 600px; height: 600px; top: -200px; left: -150px; background: radial-gradient(circle, #5E5CE6 0%, transparent 70%); animation-delay: 0s; }
+.blob-2 { width: 500px; height: 500px; top: 30%; right: -150px; background: radial-gradient(circle, #FF375F 0%, transparent 70%); animation-delay: -5s; }
+.blob-3 { width: 450px; height: 450px; bottom: -100px; left: 20%; background: radial-gradient(circle, #0A84FF 0%, transparent 70%); animation-delay: -10s; }
+.blob-4 { width: 350px; height: 350px; bottom: 20%; right: 10%; background: radial-gradient(circle, #BF5AF2 0%, transparent 70%); animation-delay: -15s; }
+@keyframes float { 0%, 100% { transform: translate(0,0) scale(1); } 25% { transform: translate(40px,-30px) scale(1.05); } 50% { transform: translate(-20px,20px) scale(0.95); } 75% { transform: translate(30px,40px) scale(1.02); } }
+
+/* ── Neural Canvas ── */
+#neuralCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ── Rainbow Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(191,90,242,0.5) 25%,
+    rgba(10,132,255,0.5) 50%,
+    rgba(255,55,95,0.5) 75%,
+    transparent 100%);
+  border: none;
+  margin: 0 0 52px;
+}
+
+/* ── Section Label (Apple Style) ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 52px;
+}
+.stat-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange  { border-color: rgba(255,159,10,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 12px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.glass-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-1px);
+}
+
+/* ── Bug Fix Card ── */
+.bug-fix {
+  background: rgba(255,55,95,0.08);
+  border: 1px solid rgba(255,55,95,0.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.bug-fix strong { color: var(--pink); font-weight: 600; }
+.bug-fix .bug-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pink);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bug-fix .bug-title::before {
+  content: '🐛';
+  font-size: 12px;
+}
+
+/* ── Tag Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-purple { background: rgba(191,90,242,0.18); color: #BF5AF2; border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: #0A84FF; border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: #FF375F; border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: #FF9F0A; border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: #30D158; border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: #64D2FF; border: 1px solid rgba(100,210,255,0.35); }
+
+/* ── Hero Title Accent ── */
+.hero-title {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #FF9F0A 0%, #FF375F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  margin-top: 96px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .top-nav { padding: 0 16px; }
+  .nav-date { display: none; }
+}
+
+
+.report-body {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-dim);
+  margin-bottom: 28px; padding-top: 24px;
+  letter-spacing: 0.5px;
+}
+.breadcrumb a { color: var(--blue); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { opacity: 0.4; }
+.page-hero { padding-top: 24px; margin-bottom: 40px; }
+.page-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.page-date { font-size: 13px; font-weight: 500; letter-spacing: 0.5px; color: var(--text-dim); }
+.page-weekday { font-size: 13px; color: var(--text-muted); }
+.hero-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+.hero-title .accent { background: linear-gradient(135deg, #FF9F0A, #FF375F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-badge { display: flex; flex-wrap: wrap; gap: 8px; }
+.divider { height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(191,90,242,0.5) 25%, rgba(10,132,255,0.5) 50%, rgba(255,55,95,0.5) 75%, transparent 100%); border: none; margin: 0 0 52px; }
+.section { margin-bottom: 52px; }
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; }
+@media (max-width: 640px) { .cards-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid; border-radius: 16px; padding: 18px 16px; text-align: center; transition: border-color 0.2s; }
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange { border-color: rgba(255,159,10,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-num { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.3px; }
+.glass-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; transition: border-color 0.2s, transform 0.2s; }
+.glass-card:hover { border-color: var(--border-hi); transform: translateY(-1px); }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 7px; flex-wrap: wrap; }
+.card-title .emoji { flex-shrink: 0; font-size: 15px; }
+.card-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.3px; }
+.card-content { font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+.card-content p { margin-bottom: 8px; }
+.card-content p:last-child { margin-bottom: 0; }
+.card-content ul, .card-content ol { padding-left: 18px; margin-bottom: 8px; }
+.card-content li { margin-bottom: 4px; }
+.card-content strong { color: var(--text); font-weight: 600; }
+.card-content a { color: var(--blue); text-decoration: none; }
+.card-content a:hover { text-decoration: underline; }
+.card-content code { background: rgba(100,210,255,0.1); border: 1px solid rgba(100,210,255,0.2); border-radius: 4px; padding: 1px 6px; font-size: 11px; font-family: 'Courier New', monospace; color: var(--cyan); }
+.card-content table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+.card-content th { background: var(--surface); padding: 7px 10px; border: 1px solid var(--border); color: var(--text-dim); font-weight: 600; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; text-align: left; }
+.card-content td { padding: 7px 10px; border: 1px solid rgba(255,255,255,0.06); color: var(--text-dim); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-purple { background: rgba(191,90,242,0.18); color: var(--purple); border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: var(--blue); border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: var(--pink); border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: var(--orange); border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: var(--green); border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: var(--cyan); border: 1px solid rgba(100,210,255,0.35); }
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 10px; margin-bottom: 14px; margin-top: 40px; }
+.section-label:first-child { margin-top: 0; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.toc-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 40px; }
+.toc-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.footer { text-align: center; margin-top: 80px; padding: 24px 0; font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; border-top: 1px solid var(--border); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+</style>
+</head>
+<body>
+<div class="blob-canvas">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<canvas id="neuralCanvas"></canvas>
+
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a class="nav-back" href="../">← 总目录</a>
+    <span class="nav-sep" style="opacity:0.4;margin:0 6px;color:var(--text-muted);">/</span>
+    <span class="nav-current" style="font-size:12px;font-weight:500;color:var(--text-dim);">2026.05.12 · Tuesday</span>
+  </div>
+  <button id="themeToggle" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);border-radius:50px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:border-color 0.2s;color:var(--text-muted);">☀️</button>
+</nav>
+
+<div class="report-body">
+  <div class="breadcrumb">
+    <a href="../">← 所有日报</a>
+    <span>/</span>
+    <span>2026.05.12</span>
+  </div>
+
+  <div class="page-hero">
+    <div class="page-eyebrow">
+      <span class="page-date">2026.05.12</span>
+      <span class="page-weekday">· Tuesday</span>
+    </div>
+    <h1 class="hero-title">🦞 2026-05-12 会话记录<br><span class="accent">Tuesday</span></h1>
+    <div class="hero-badge"><span class="badge badge-green">✅ 8项完成</span></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-num purple">1</div>
+      <div class="stat-label">心跳</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-num orange">0</div>
+      <div class="stat-label">教训</div>
+    </div>
+    <div class="stat-card pink">
+      <div class="stat-num pink">11</div>
+      <div class="stat-label">Bug</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num green">8</div>
+      <div class="stat-label">完成</div>
+    </div></div>
+
+  <!-- TOC -->
+  <div class="toc-card">
+  <div class="toc-label">目录</div>
+  <div class="toc-pills"><a href="#主题8个AI产业链扫" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  🚨 主题：8 个 </a>
+      <a href="#1346心跳记录" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  🫀 13:46 心</a>
+      <a href="#14202108下午" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">💼  🕐 14:20 ~</a>
+      <a href="#21372156Cr" class="toc-pill toc-pink" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(255,55,95,0.12);border:1px solid rgba(255,55,95,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--pink);text-decoration:none;">🐛  🕘 21:37 ~</a></div>
+</div>
+
+  <!-- Sections -->
+  <div class="section"><div class="section-label" id="主题8个AI产业链扫">📌 🚨 主题：8 个 AI产业链扫描 cron 全面翻修</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>触发事件 </div>
+  
+  <div class="card-content"><p>早间扫描（二）输出质量严重违规：Agent 写了综合投研报告，而非逐条段子扫描。根因是 cron message 里没有嵌入模板约束，Agent 在 isolated 模式下按自己理解做了"最优"输出。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>违规清单（对照 SOP v3.5） </div>
+  
+  <div class="card-content"><p>1. 没有逐条用模板格式（### N. 完整原标题）</p>
+<p>2. 标题全部被改写（原始 title 一个字没保留）</p>
+<p>3. 来源没标注类型（缺"Alpha派-点评"/"Alpha派-纪要"）</p>
+<p>4. 🔥 按章节分级（用了 ### 🔥🔥🔥 核心级）</p>
+<p>5. 多条段子合并为主题叙述</p>
+<p>6. 数字没有独立来源出处</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>根因 </div>
+  
+  <div class="card-content"><p>Cron message 引用道 SOP v3.1，但 SOP 已迭代到 v3.5（新增逐条模板、特斯拉/马斯克关键词等）。Isolated session 不加载 MEMORY.md 和 tasks 文件，只能靠 cron message 本身。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">🐛</span>修复内容（8 个 cron 全部更新） <span class="badge badge-pink">Bug Fix</span></div>
+  
+  <div class="card-content"><p><strong>关键词修正</strong>：</p>
+<ul><li>扫描（一）：HBM→机器人、+存储，7→8词，14→16轮</li><li>扫描（二）：TGV/AI电源→特斯拉/马斯克/电源，8→9词，16→18轮</li></ul>
+<p><strong>时间窗修正</strong>：</p>
+<ul><li>早间：00:00/20:50 → 统一 20:49（与晚间无缝衔接）</li><li>晚间：08:00 → 统一 07:50</li></ul>
+<p><strong>新增输出模板</strong>（嵌入每个 cron message）：</p>
+<p><code>`</code></p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>N. 完整原标题（不缩写，不改写） </div>
+  
+  <div class="card-content"><ul><li>来源：XX证券/XX机构 + 数据源-点评（或 数据源-纪要）</li><li>时间：YYYY-MM-DD HH:MM</li><li>核心逻辑：1-2句话</li><li>定量数据：所有数字加粗。多来源数字不同→标注差异</li><li>涉及公司：公司名</li><li>🚨 边际变化：🔥🔥🔥/🔥🔥/🔥 + 一句话</li></ul><p><code>`</code></p>
+
+<p><strong>4 条强制约束</strong>：</p>
+<p>1. 完整原标题，不缩写，不改写</p>
+<p>2. 来源标注完整类型</p>
+<p>3. 禁止合并多条段子为一个主题叙述（同一事件key合并为一条，但数字不同在定量数据栏标注）</p>
+<p>4. 禁止编造数据，不确定标注"未搜到明确口径"</p>
+
+<p><strong>去重规则升级</strong>：事件key匹配→默认合并为一条，但多来源数字不同时在定量数据栏标注"XX口径x%、YY口径y%"</p>
+
+<p><strong>标题简化</strong>：<code>🔍 AI产业链段子点评 · 进门财经 · ...扫描（一）</code> → <code>🔍 AI产业链点评 · YYYY年MM月DD日 进门财经 早间（一）</code></p>
+
+<p><strong>版本号</strong>：v3.1→v3.5</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>Cron 修改记录 </div>
+  
+  <div class="card-content"><table><thead><tr><th>序号</th><th>ID</th><th>名称</th><th>改动</th></tr></thead><tbody><tr><td>1</td><td>9db72d3f</td><td>Alpha早间（一）</td><td>7→8词, 14→16轮, 时间窗修正</td></tr><tr><td>2</td><td>5ca972cd</td><td>Alpha早间（二）</td><td>8→9词, 16→18轮, 时间窗修正</td></tr><tr><td>3</td><td>5d5df0a2</td><td>Alpha晚间（一）</td><td>同早间（一）+ 晚间去重升级</td></tr><tr><td>4</td><td>3c9ea0ef</td><td>Alpha晚间（二）</td><td>同早间（二）+ 晚间去重升级</td></tr><tr><td>5</td><td>1f3de30d</td><td>进门早间（一）</td><td>同Alpha早间（一）</td></tr><tr><td>6</td><td>0605c658</td><td>进门早间（二）</td><td>同Alpha早间（二）</td></tr><tr><td>7</td><td>f86aa7cf</td><td>进门晚间（一）</td><td>同Alpha晚间（一）</td></tr><tr><td>8</td><td>2bbd52a6</td><td>进门晚间（二）</td><td>同Alpha晚间（二）</td></tr></tbody></table></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">🐛</span>8 cron 全量验证结果：0 错误 <span class="badge badge-pink">Bug Fix</span></div>
+  
+  <div class="card-content"><p style="color:var(--text-muted);font-size:13px;">暂无内容</p></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>SOP v3.5 vs Cron 最终对照发现的剩余差异（待用户拍板） </div>
+  
+  <div class="card-content"><p>1. 进门 429 阈值：SOP统一≥10 vs 进门保留≥6</p>
+<p>2. 标题日期格式：SOP示例 <code>2026-05-06</code> vs cron <code>YYYY年MM月DD日</code></p>
+<p>3. SOP 去重规则未同步新规则</p>
+<p>4. 3个补充缺失：fetch验证/失败告警/500重试</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">⚠️</span>关键教训 <span class="badge badge-orange">教训</span></div>
+  
+  <div class="card-content"><ul><li>Cron message 在 isolated 模式下是 Agent 唯一指令源，必须自包含所有格式约束</li><li>SOP 迭代后必须同步更新 cron message，不能只改 SOP 文档</li><li>"引用 SOP vX.X" 不够，关键模板要内嵌</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="1346心跳记录">📌 🫀 13:46 心跳记录</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>今日进展 </div>
+  
+  <div class="card-content"><ul><li>完成 8 个 cron 全量翻修（关键词/轮数/时间窗/模板/约束/去重/标题）</li><li>全量 8 cron 验证通过，0 错误</li><li>SOP v3.5 vs Cron 全文对照完成，发现 3 差异+2 缺失待用户确认</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>待办 </div>
+  
+  <div class="card-content"><ul><li>用户正在审核最终对照结果，4 个待拍板问题</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">💼</span>定时任务 <span class="badge badge-blue">工作</span></div>
+  
+  <div class="card-content"><ul><li>8 个 cron 全部 ok，今晚 20:50 进门晚间（一）首轮验证新版</li></ul>
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="14202108下午">💼 🕐 14:20 ~ 21:08 下午任务：扫描数据→公司深挖管线</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>启动 </div>
+  
+  <div class="card-content"><p>大麦发来 SOP v6.2 文档（Q3fwdw1hpoKqPsx1XKkcBWLKnfb），要求阅读后对比 cron 系统，思考如何让扫描段子被公司深挖复用。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>差距分析 </div>
+  
+  <div class="card-content"><ul><li>扫描数据按日期+主题组织（飞书文档+事件簿JSON）</li><li>SOP v6.2 按股票代码组织（ls ~/workspace1/data/raw/{code}/）</li><li>两套系统不互通——扫描跑了上百条段子，但做公司深挖时完全用不上</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>5 步方案（大麦认可） </div>
+  
+  <div class="card-content"><p>1. 建映射表 ✅（今天完成）</p>
+<p>2. 定归档格式</p>
+<p>3. 改 cron 输出逻辑</p>
+<p>4. 接回 SOP v6.2</p>
+<p>5. 试点+迭代</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">💼</span>Step 1 执行 <span class="badge badge-blue">工作</span></div>
+  
+  <div class="card-content"><ul><li>从事件簿（05-08~05-12）提取公司名</li><li>通过 get_stock_details 批量查询</li><li>四轮迭代：91→180→266→333 家</li><li>最终产物：~/workspace1/data/company_map.json（v1.3）</li><li>覆盖机器人35/液冷30/PCB27/半导体材料19/AI电源18等全部产业链</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>晚间扫描 </div>
+  
+  <div class="card-content"><p>20:50 进门晚间（一）完成，16轮全量成功，0错误，飞书文档已出。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>交接保存 </div>
+  
+  <div class="card-content"><p>已写 /memory/2026-05-12-handoff.md（7057字节，含四部分）</p>
+
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="21372156Cr">🐛 🕘 21:37 ~ 21:56 Cron v3.5 紧急修复</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">🐛</span>问题 <span class="badge badge-pink">Bug Fix</span></div>
+  
+  <div class="card-content"><p>用户反馈：扫描深挖返回内容非常少。根因分析：</p>
+<p>1. 去重规则过激 → 多来源同事件默认合并为1条（5变1）</p>
+<p>2. 待观察池被压缩为短格式（21条全1行摘要，无定量数据）</p>
+<p>3. 事件簿只存处理后的摘要，raw research_query 原文全部丢失</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>用户决策 </div>
+  
+  <div class="card-content"><ul><li>去重规则、深挖上限：<strong>不改</strong>（保持现状）</li><li>修复 3：待观察池从短格式恢复为逐条模板格式 ✅</li><li>修复 4：事件簿新增 _raw_responses.json 留档完整原文 ✅</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">💼</span>执行 <span class="badge badge-blue">工作</span></div>
+  
+  <div class="card-content"><p>8 个 cron 全部更新（2项编辑 × 8 = 16处改动）：</p>
+<p>1. "待观察候选池（短格式）" → "逐条模板格式，与重点变化相同"</p>
+<p>2. 新增原始数据留档步骤：写 _raw_responses.json，按 event_id 索引</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>验证 </div>
+  
+  <div class="card-content"><p>8 cron 全部通过：模板格式 True + raw留档 True</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>文件更新 </div>
+  
+  <div class="card-content"><ul><li>tasks/comein-brm-ai-chain-daily-scan.md：v3.4→v3.5</li><li>tasks/ai-chain-daily-scan.md：v3.4→v3.5</li></ul></div>
+</div></div></div>
+
+  <div class="footer">每日进化日报 · OpenClaw · 2026.05.12</div>
+</div>
+
+<script>(function() {
+  const canvas = document.getElementById('neuralCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], animRunning = true;
+  const CFG = { count: 40, connectDist: 130, speed: 0.35, drift: 0.12, attractCX: 0.5, nodeR: 2, lineAlpha: 0.05 };
+  const colors = ['#BF5AF2','#0A84FF','#FF375F','#64D2FF','#30D158','#FF9F0A'];
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random()*W; this.y = Math.random()*H;
+      this.vx = (Math.random()-0.5)*CFG.speed;
+      this.vy = (Math.random()-0.5)*CFG.speed;
+      this.color = colors[Math.floor(Math.random()*colors.length)];
+      this.alpha = 0.3 + Math.random()*0.5;
+      this.phase = Math.random()*Math.PI*2;
+      this.flicker = 0.9 + Math.random()*0.1;
+    }
+    update(t) {
+      const cx = W*CFG.attractCX, cy = H*0.35;
+      const dx = cx-this.x, dy = cy-this.y;
+      const distC = Math.sqrt(dx*dx+dy*dy)+1;
+      this.ax = (dx/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.ay = (dy/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.vx = (this.vx+this.ax)*0.96;
+      this.vy = (this.vy+this.ay)*0.96;
+      const spd = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+      if (spd > CFG.speed) { this.vx=(this.vx/spd)*CFG.speed; this.vy=(this.vy/spd)*CFG.speed; }
+      this.x += this.vx; this.y += this.vy;
+      if (this.x<0) this.x=W; if (this.x>W) this.x=0;
+      if (this.y<0) this.y=H; if (this.y>H) this.y=0;
+      this.flicker = 0.88+Math.sin(t*0.001+this.phase)*0.12;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha*this.flicker;
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+      ctx.beginPath(); ctx.arc(this.x,this.y,CFG.nodeR,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+  function drawConn() {
+    ctx.save();
+    for (let i=0; i<particles.length; i++) {
+      for (let j=i+1; j<particles.length; j++) {
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < CFG.connectDist) {
+          const t = 1-d/CFG.connectDist;
+          ctx.globalAlpha = CFG.lineAlpha*t*2.5*particles[i].flicker;
+          ctx.strokeStyle = particles[i].color; ctx.lineWidth = t*1.2;
+          ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+  }
+  function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function init() { resize(); particles=[]; for(let i=0;i<CFG.count;i++) particles.push(new Particle()); }
+  function loop(t) {
+    if (!animRunning) return;
+    ctx.clearRect(0,0,W,H); drawConn();
+    for (const p of particles) { p.update(t); p.draw(); }
+    requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', () => { animRunning=!document.hidden; if(animRunning) requestAnimationFrame(loop); });
+  window.addEventListener('resize', resize);
+  init(); requestAnimationFrame(loop);
+})();</script>
+<script>(function() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  btn.addEventListener('click', function() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    btn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+})();</script>
+</body>
+</html>
