@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🦞 2026-05-16 记录 · 2026.05.16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --bg: #000000;
+  --text: #ffffff;
+  --text-dim: rgba(255,255,255,0.55);
+  --text-muted: rgba(255,255,255,0.30);
+  --border: rgba(255,255,255,0.12);
+  --border-hi: rgba(255,255,255,0.22);
+  --glass-bg: rgba(255,255,255,0.07);
+  --blur: 20px;
+  --purple: #BF5AF2;
+  --blue: #0A84FF;
+  --pink: #FF375F;
+  --orange: #FF9F0A;
+  --cyan: #64D2FF;
+  --green: #30D158;
+}
+
+/* Theme: Light */
+[data-theme="light"] {
+  --bg: #ffffff;
+  --text: #1d1d1f;
+  --text-dim: rgba(29,29,31,0.55);
+  --text-muted: rgba(29,29,31,0.35);
+  --border: rgba(0,0,0,0.10);
+  --border-hi: rgba(0,0,0,0.22);
+  --glass-bg: rgba(0,0,0,0.02);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ── Top Nav Bar ── */
+.top-nav {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+}
+.top-nav-left { display: flex; align-items: center; gap: 10px; }
+.top-nav-right { display: flex; align-items: center; gap: 14px; }
+.nav-back {
+  display: flex; align-items: center; gap: 5px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--text); }
+.nav-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+}
+.theme-toggle {
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  width: 34px; height: 34px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.theme-toggle:hover {
+  border-color: var(--border-hi);
+  background: rgba(255,255,255,0.12);
+}
+[data-theme="light"] .theme-toggle:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+/* ── Blob Background ── */
+.blob-canvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.6;
+  animation: float 20s ease-in-out infinite;
+}
+.blob-1 { width: 600px; height: 600px; top: -200px; left: -150px; background: radial-gradient(circle, #5E5CE6 0%, transparent 70%); animation-delay: 0s; }
+.blob-2 { width: 500px; height: 500px; top: 30%; right: -150px; background: radial-gradient(circle, #FF375F 0%, transparent 70%); animation-delay: -5s; }
+.blob-3 { width: 450px; height: 450px; bottom: -100px; left: 20%; background: radial-gradient(circle, #0A84FF 0%, transparent 70%); animation-delay: -10s; }
+.blob-4 { width: 350px; height: 350px; bottom: 20%; right: 10%; background: radial-gradient(circle, #BF5AF2 0%, transparent 70%); animation-delay: -15s; }
+@keyframes float { 0%, 100% { transform: translate(0,0) scale(1); } 25% { transform: translate(40px,-30px) scale(1.05); } 50% { transform: translate(-20px,20px) scale(0.95); } 75% { transform: translate(30px,40px) scale(1.02); } }
+
+/* ── Neural Canvas ── */
+#neuralCanvas {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ── Rainbow Divider ── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(191,90,242,0.5) 25%,
+    rgba(10,132,255,0.5) 50%,
+    rgba(255,55,95,0.5) 75%,
+    transparent 100%);
+  border: none;
+  margin: 0 0 52px;
+}
+
+/* ── Section Label (Apple Style) ── */
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 52px;
+}
+.stat-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid;
+  border-radius: 16px;
+  padding: 18px 16px;
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange  { border-color: rgba(255,159,10,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* ── Glass Card ── */
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  margin-bottom: 12px;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.glass-card:hover {
+  border-color: var(--border-hi);
+  transform: translateY(-1px);
+}
+
+/* ── Bug Fix Card ── */
+.bug-fix {
+  background: rgba(255,55,95,0.08);
+  border: 1px solid rgba(255,55,95,0.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.bug-fix strong { color: var(--pink); font-weight: 600; }
+.bug-fix .bug-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--pink);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.bug-fix .bug-title::before {
+  content: '🐛';
+  font-size: 12px;
+}
+
+/* ── Tag Badge ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+.badge-purple { background: rgba(191,90,242,0.18); color: #BF5AF2; border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: #0A84FF; border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: #FF375F; border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: #FF9F0A; border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: #30D158; border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: #64D2FF; border: 1px solid rgba(100,210,255,0.35); }
+
+/* ── Hero Title Accent ── */
+.hero-title {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #FF9F0A 0%, #FF375F 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.1;
+}
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  margin-top: 96px;
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .top-nav { padding: 0 16px; }
+  .nav-date { display: none; }
+}
+
+
+.report-body {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text-dim);
+  margin-bottom: 28px; padding-top: 24px;
+  letter-spacing: 0.5px;
+}
+.breadcrumb a { color: var(--blue); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb span { opacity: 0.4; }
+.page-hero { padding-top: 24px; margin-bottom: 40px; }
+.page-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.page-date { font-size: 13px; font-weight: 500; letter-spacing: 0.5px; color: var(--text-dim); }
+.page-weekday { font-size: 13px; color: var(--text-muted); }
+.hero-title { font-size: clamp(28px, 5vw, 48px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; }
+.hero-title .accent { background: linear-gradient(135deg, #FF9F0A, #FF375F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-badge { display: flex; flex-wrap: wrap; gap: 8px; }
+.divider { height: 1px; background: linear-gradient(90deg, transparent 0%, rgba(191,90,242,0.5) 25%, rgba(10,132,255,0.5) 50%, rgba(255,55,95,0.5) 75%, transparent 100%); border: none; margin: 0 0 52px; }
+.section { margin-bottom: 52px; }
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; }
+@media (max-width: 640px) { .cards-grid { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid; border-radius: 16px; padding: 18px 16px; text-align: center; transition: border-color 0.2s; }
+.stat-card.purple { border-color: rgba(191,90,242,0.35); }
+.stat-card.blue   { border-color: rgba(10,132,255,0.35); }
+.stat-card.pink   { border-color: rgba(255,55,95,0.35); }
+.stat-card.orange { border-color: rgba(255,159,10,0.35); }
+.stat-card.green  { border-color: rgba(48,209,88,0.35); }
+.stat-card.cyan   { border-color: rgba(100,210,255,0.35); }
+.stat-num { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.stat-num.purple { color: var(--purple); text-shadow: 0 0 20px rgba(191,90,242,0.35); }
+.stat-num.blue   { color: var(--blue);   text-shadow: 0 0 20px rgba(10,132,255,0.35); }
+.stat-num.pink   { color: var(--pink);   text-shadow: 0 0 20px rgba(255,55,95,0.35); }
+.stat-num.orange { color: var(--orange); text-shadow: 0 0 20px rgba(255,159,10,0.35); }
+.stat-num.green  { color: var(--green);  text-shadow: 0 0 20px rgba(48,209,88,0.35); }
+.stat-num.cyan   { color: var(--cyan);   text-shadow: 0 0 20px rgba(100,210,255,0.35); }
+.stat-label { font-size: 11px; font-weight: 500; color: var(--text-muted); margin-top: 6px; letter-spacing: 0.3px; }
+.glass-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; transition: border-color 0.2s, transform 0.2s; }
+.glass-card:hover { border-color: var(--border-hi); transform: translateY(-1px); }
+.card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 7px; flex-wrap: wrap; }
+.card-title .emoji { flex-shrink: 0; font-size: 15px; }
+.card-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.3px; }
+.card-content { font-size: 13px; color: var(--text-dim); line-height: 1.75; }
+.card-content p { margin-bottom: 8px; }
+.card-content p:last-child { margin-bottom: 0; }
+.card-content ul, .card-content ol { padding-left: 18px; margin-bottom: 8px; }
+.card-content li { margin-bottom: 4px; }
+.card-content strong { color: var(--text); font-weight: 600; }
+.card-content a { color: var(--blue); text-decoration: none; }
+.card-content a:hover { text-decoration: underline; }
+.card-content code { background: rgba(100,210,255,0.1); border: 1px solid rgba(100,210,255,0.2); border-radius: 4px; padding: 1px 6px; font-size: 11px; font-family: 'Courier New', monospace; color: var(--cyan); }
+.card-content table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+.card-content th { background: var(--surface); padding: 7px 10px; border: 1px solid var(--border); color: var(--text-dim); font-weight: 600; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; text-align: left; }
+.card-content td { padding: 7px 10px; border: 1px solid rgba(255,255,255,0.06); color: var(--text-dim); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 600; letter-spacing: 0.3px; }
+.badge-purple { background: rgba(191,90,242,0.18); color: var(--purple); border: 1px solid rgba(191,90,242,0.35); }
+.badge-blue   { background: rgba(10,132,255,0.18); color: var(--blue); border: 1px solid rgba(10,132,255,0.35); }
+.badge-pink   { background: rgba(255,55,95,0.18); color: var(--pink); border: 1px solid rgba(255,55,95,0.35); }
+.badge-orange { background: rgba(255,159,10,0.18); color: var(--orange); border: 1px solid rgba(255,159,10,0.35); }
+.badge-green  { background: rgba(48,209,88,0.18); color: var(--green); border: 1px solid rgba(48,209,88,0.35); }
+.badge-cyan   { background: rgba(100,210,255,0.18); color: var(--cyan); border: 1px solid rgba(100,210,255,0.35); }
+.section-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 10px; margin-bottom: 14px; margin-top: 40px; }
+.section-label:first-child { margin-top: 0; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.toc-card { background: var(--glass-bg); backdrop-filter: blur(var(--blur)); -webkit-backdrop-filter: blur(var(--blur)); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; margin-bottom: 40px; }
+.toc-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+.toc-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.footer { text-align: center; margin-top: 80px; padding: 24px 0; font-size: 11px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; opacity: 0.5; border-top: 1px solid var(--border); }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+</style>
+</head>
+<body>
+<div class="blob-canvas">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+</div>
+<canvas id="neuralCanvas"></canvas>
+
+<nav class="top-nav">
+  <div class="top-nav-left">
+    <a class="nav-back" href="../">← 总目录</a>
+    <span class="nav-sep" style="opacity:0.4;margin:0 6px;color:var(--text-muted);">/</span>
+    <span class="nav-current" style="font-size:12px;font-weight:500;color:var(--text-dim);">2026.05.16 · Saturday</span>
+  </div>
+  <button id="themeToggle" onclick="toggleTheme()" style="background:none;border:1px solid var(--border);border-radius:50px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:border-color 0.2s;color:var(--text-muted);">☀️</button>
+</nav>
+
+<div class="report-body">
+  <div class="breadcrumb">
+    <a href="../">← 所有日报</a>
+    <span>/</span>
+    <span>2026.05.16</span>
+  </div>
+
+  <div class="page-hero">
+    <div class="page-eyebrow">
+      <span class="page-date">2026.05.16</span>
+      <span class="page-weekday">· Saturday</span>
+    </div>
+    <h1 class="hero-title">🦞 2026-05-16 记录<br><span class="accent">Saturday</span></h1>
+    <div class="hero-badge"><span class="badge badge-green">✅ 9项完成</span></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card purple">
+      <div class="stat-num purple">1</div>
+      <div class="stat-label">心跳</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-num orange">0</div>
+      <div class="stat-label">教训</div>
+    </div>
+    <div class="stat-card pink">
+      <div class="stat-num pink">7</div>
+      <div class="stat-label">Bug</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-num green">9</div>
+      <div class="stat-label">完成</div>
+    </div></div>
+
+  <!-- TOC -->
+  <div class="toc-card">
+  <div class="toc-label">目录</div>
+  <div class="toc-pills"><a href="#京仪装备688652" class="toc-pill toc-green" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(48,209,88,0.12);border:1px solid rgba(48,209,88,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--green);text-decoration:none;">✅  京仪装备（68865</a>
+      <a href="#待办" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  待办</a>
+      <a href="#京仪装备688652" class="toc-pill toc-green" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(48,209,88,0.12);border:1px solid rgba(48,209,88,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--green);text-decoration:none;">✅  京仪装备（68865</a>
+      <a href="#中巨芯688549投" class="toc-pill toc-green" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(48,209,88,0.12);border:1px solid rgba(48,209,88,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--green);text-decoration:none;">✅  中巨芯（688549</a>
+      <a href="#待办" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  待办</a>
+      <a href="#中巨芯688549投" class="toc-pill toc-blue" style="display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:rgba(10,132,255,0.12);border:1px solid rgba(10,132,255,0.3);border-radius:100px;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;">📌  中巨芯 (68854</a></div>
+</div>
+
+  <!-- Sections -->
+  <div class="section"><div class="section-label" id="京仪装备688652">✅ 京仪装备（688652）投研完整流程完成</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">💼</span>工作流执行 <span class="badge badge-blue">工作</span></div>
+  
+  <div class="card-content"><p>按 SOP v5.72，完成京仪装备从零到飞书落盘的完整工作流：</p>
+<p>1. <strong>数据采集</strong>：进门财经 MCP（comment 66条 + minutes 0条 + searchRoadshowSummary 2场业绩会纪要）+ Alpha派 recall（comment 39条 + roadShow 1条 + roadShow_ir 0条）</p>
+<p>2. <strong>定量穷举</strong>：三轮（粗扫 → 深挖查漏×2 → 整合梳理），最终 15 维度 70+ 条数据</p>
+<p>3. <strong>定价卡</strong>：落盘 <code>data/pricing_cards/688652/</code></p>
+<p>4. <strong>B档正文</strong>：~2,500字，落盘 <code>data/reports/688652/</code></p>
+<p>5. <strong>飞书落盘</strong>：成功替换主文档（<code>PxmxdbDEeodJLixz4nZcoelynie</code>）京仪装备章节，旧版已备份</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>关键经验 </div>
+  
+  <div class="card-content"><ul><li><strong>searchRoadshowSummary 是 minutes=0 时的有效 fallback</strong>：进门财经 research_query type=minutes 返回零条，但 searchRoadshowSummary 捞到了两场公司官方业绩说明会纪要，补充了产品拆分/客户/专利等关键数据</li><li><strong>产品收入拆分来自公司年报主营拆分接口</strong>（get_main_business_segments），不是进门财经或Alpha派搜到的——穷举时不要漏了这个入口</li><li><strong>Chiller TAM 只能靠第三方市场研究</strong>（IntelMarketResearch ~6.5-7亿美元），无产业或公告口径，报告中标注"第三方口径"</li><li><strong>飞书替换流程</strong>：fetch 定位旧版 → 备份到本地 → replace_range 替换 → 独立 fetch 验证（不能只看 API success）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>版本路径 </div>
+  
+  <div class="card-content"><p><code>`</code></p>
+<p>data/raw/688652/           # 原始召回数据</p>
+<p>data/exhaustion/688652/    # 穷举清单</p>
+<p>data/pricing_cards/688652/ # 定价卡</p>
+<p>data/reports/688652/       # B档正文</p>
+<p>backup/feishu/PxmxdbDEeodJLixz4nZcoelynie/  # 飞书旧版备份</p>
+<p><code>`</code></p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="待办">📌 待办</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>- 微导纳米（688147）→ 下一家 </div>
+  
+  <div class="card-content"><ul><li>艾森股份（688720）</li><li>安集科技（688019）</li><li>通富微电（002156）</li><li>甬矽电子（688362）</li></ul><p># 2026-05-16 记录</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="京仪装备688652">✅ 京仪装备（688652）投研完整流程完成</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">💼</span>工作流执行 <span class="badge badge-blue">工作</span></div>
+  
+  <div class="card-content"><p>按 SOP v5.72，完成京仪装备从零到飞书落盘的完整工作流：</p>
+<p>1. <strong>数据采集</strong>：进门财经 MCP（comment 66条 + minutes 0条 + searchRoadshowSummary 2场业绩会纪要）+ Alpha派 recall（comment 39条 + roadShow 1条 + roadShow_ir 0条）</p>
+<p>2. <strong>定量穷举</strong>：三轮（粗扫 → 深挖查漏×2 → 整合梳理），最终 15 维度 70+ 条数据</p>
+<p>3. <strong>定价卡</strong>：落盘 <code>data/pricing_cards/688652/</code></p>
+<p>4. <strong>B档正文</strong>：~2,500字，落盘 <code>data/reports/688652/</code></p>
+<p>5. <strong>飞书落盘</strong>：成功替换主文档（<code>PxmxdbDEeodJLixz4nZcoelynie</code>）京仪装备章节，旧版已备份</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>关键经验 </div>
+  
+  <div class="card-content"><ul><li><strong>searchRoadshowSummary 是 minutes=0 时的有效 fallback</strong>：进门财经 research_query type=minutes 返回零条，但 searchRoadshowSummary 捞到了两场公司官方业绩说明会纪要，补充了产品拆分/客户/专利等关键数据</li><li><strong>产品收入拆分来自公司年报主营拆分接口</strong>（get_main_business_segments），不是进门财经或Alpha派搜到的——穷举时不要漏了这个入口</li><li><strong>Chiller TAM 只能靠第三方市场研究</strong>（IntelMarketResearch ~6.5-7亿美元），无产业或公告口径，报告中标注"第三方口径"</li><li><strong>飞书替换流程</strong>：fetch 定位旧版 → 备份到本地 → replace_range 替换 → 独立 fetch 验证（不能只看 API success）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>版本路径 </div>
+  
+  <div class="card-content"><p><code>`</code></p>
+<p>data/raw/688652/           # 原始召回数据</p>
+<p>data/exhaustion/688652/    # 穷举清单</p>
+<p>data/pricing_cards/688652/ # 定价卡</p>
+<p>data/reports/688652/       # B档正文</p>
+<p>backup/feishu/PxmxdbDEeodJLixz4nZcoelynie/  # 飞书旧版备份</p>
+<p><code>`</code></p>
+
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="中巨芯688549投">✅ 中巨芯（688549）投研完整流程完成（同日第二家）</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">💼</span>工作流执行 <span class="badge badge-blue">工作</span></div>
+  
+  <div class="card-content"><p>1. <strong>数据采集</strong>：进门财经 comment 5条 + minutes 0条（小票无路演）+ roadshow_summary 10条（含中信证券年报交流会直连）+ Alpha派 comment 13条 + roadShow 1条 + roadShow_ir 0条</p>
+<p>2. <strong>财务数据</strong>：2024/2025年报主营拆分 + 2026Q1财务快照</p>
+<p>3. <strong>定量穷举</strong>：3.5轮（粗扫 → 深挖查漏 → 查漏补缺补存储+价格 → 整合梳理）</p>
+<p>4. <strong>定价卡</strong>：落盘 <code>data/pricing_cards/sh688549/</code></p>
+<p>5. <strong>B档报告</strong>：经历 <strong>4 次迭代</strong>（v1→v2→v3→v4），最终 v4 使用分部估值法</p>
+<p>6. <strong>飞书落盘</strong>：5号机器人文件夹，replace_all 全量替换</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">⚠️</span>🚨 关键教训（这次最重要的收获） <span class="badge badge-orange">教训</span></div>
+  
+  <div class="card-content"><p><strong>教训一：涨价不能按毛利率/净利率算，要从成本端出发</strong></p>
+<p>用户直接指出：涨价弹性必须从成本出发算——售价涨多少、成本固定了多少、价差扩大多少、乘出货量 = 增量利润。不能跳过成本分析直接假设毛利率。</p>
+
+<p><strong>教训二：必须拆清楚所有业务板块，不能只看主力产品</strong></p>
+<p>报告 v1 只拍了 HF 一块，用户追问"他难道只有这一块业务吗？"事实上中巨芯有三大板块：</p>
+<ul><li>电子湿化学品（75%营收），内部拆为 HF + 其他酸碱</li><li>电子特种气体（25%营收，毛利率更高）</li><li>前驱体（体量小，期权价值）</li></ul>
+<p><strong>教训三：非盈利板块用 PS 不用 PE</strong></p>
+<p>用户指定特气和湿化学品非 HF 部分用 20x PS 估值，因为当前没有稳定净利润（TTM亏损），PE 不可用。</p>
+
+<p><strong>教训四：价格数据必须写清楚来源和最新数据</strong></p>
+<p>用户提供了最新的 AHF 价格数据（国内 +25%、韩国 +40%），要求在报告中融合进去，写清楚当前售价、涨价前价格、未来涨价空间。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>v1→v4 迭代路径 </div>
+  
+  <div class="card-content"><ul><li>v1：单一量价法，只拍 HF，用了毛利率净利率假设 → ❌ 用户否定</li><li>v2：分部估值，HF 从成本端算弹性，特气+其他用 PE → ⚠️ 用户指出特气不能用 PE</li><li>v3：特气和其他湿化学改用 20x PS → ⚠️ 价格数据不是最新的</li><li>v4：融入最新价格数据（AHF 1.18→1.48万 +25%，韩国 1.65万 +40%），HF 成本基线下调到 0.6-0.65万/吨（自产AHF优势） → ✅ 通过</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>分部估值框架（v4 最终版） </div>
+  
+  <div class="card-content"><ul><li>HF 板块：PE法，中性 168亿 / 乐观 332亿 / 超乐观 510亿</li><li>电子特气：PS 20x，2027E营收 5亿 = 100亿</li><li>其他湿化学品：PS 20x，2027E营收 6亿 = 120亿</li><li>前驱体：期权 5-10亿</li><li>总空间：中性 393亿 / 乐观 560亿 / 超乐观 740亿（vs 当前 248亿）</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📄</span>飞书文档 <span class="badge badge-purple">文档</span></div>
+  
+  <div class="card-content"><ul><li>链接：https://www.feishu.cn/docx/IeJ3dgMDToJjtZxfcnWchaNrnGh</li><li>文件夹：5号机器人</li><li>文件名：中巨芯（688549）· 分部估值法 · 电子级氢氟酸涨价弹性 + 存储扩产铲子股</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>数据路径 </div>
+  
+  <div class="card-content"><p><code>`</code></p>
+<p>data/raw/sh688549/                    # 原始召回数据（comein_comment/minutes/roadshow_summary + alphapai_comment/roadshow + financial_snapshot）</p>
+<p>data/exhaustion/sh688549/             # 穷举清单（round1/round2/round2.5/latest）</p>
+<p>data/pricing_cards/sh688549/          # 定价卡</p>
+<p>data/reports/sh688549/                # B档正文（v1/v2/v4，v3被覆盖）</p>
+<p><code>`</code></p>
+
+<p>---</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="待办">📌 待办</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>- 微导纳米（688147）→ 下一家 </div>
+  
+  <div class="card-content"><ul><li>艾森股份（688720）</li><li>安集科技（688019）</li><li>通富微电（002156）</li><li>甬矽电子（688362）</li></ul><p># 2026-05-16 工作日志</p>
+</div>
+</div></div></div><div class="section"><div class="section-label" id="中巨芯688549投">📌 中巨芯 (688549) 投研报告写作</div>
+  <div class="cards-grid"><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">💼</span>工作流执行 <span class="badge badge-blue">工作</span></div>
+  
+  <div class="card-content"><ul><li>完整走完 SOP 五步：数据采集 → 三轮穷举 → 定价卡 → B档报告 → 飞书落盘</li><li>数据源：进门财经 comment(5) + roadshow_summary(10)，Alpha派 comment(13) + roadShow(1)，财务数据</li><li>穷举三轮：粗扫 → 深挖查漏 → 追加存储+价格角度</li><li>B档报告约2200字，主拍法从"量价法"调整为"分部估值法"</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">⚠️</span>关键教训 <span class="badge badge-orange">教训</span></div>
+  
+  <div class="card-content"><p>#### 1. 价格弹性计算必须用成本法，不能拍毛利率</p>
+<p><strong>用户明确要求</strong>：涨价弹性要按"成本固定 + 涨价全变利润"来算，不能假设毛利率提升。</p>
+<ul><li>正确公式：当前成本 XX元/吨 → 当前ASP XX元/吨 → 当前价差 XX元/吨 → 涨XX元/吨 → 增量利润 = 涨额 × 出货量</li><li>错误做法：拍"毛利率从X%提升到Y%"来算利润</li><li>原因：中巨芯有自有萤石矿→AHF一体化，成本端相对固定（原材料锁定），价格涨的部分几乎全变毛利</li></ul>
+<p>#### 2. 不能只看一块业务，必须拆分部估值</p>
+<p><strong>用户纠正</strong>：中巨芯有三块业务，不能只拍HF。</p>
+<ul><li>电子湿化学品（75%营收）→ 量价法拍HF弹性</li><li>电子特种气体（25%营收）→ 稳定增长估值</li><li>前驱体材料（极小体量）→ 期权</li><li>主拍法从"量价法"改为"分部估值法"</li></ul>
+<p>#### 3. 定量穷举必须覆盖所有业务板块</p>
+<p>用户指出之前的穷举清单只关注了HF涨价，没拆细各业务收入结构、产能、毛利率。</p>
+</div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">✅</span>待完成 <span class="badge badge-green">完成</span></div>
+  
+  <div class="card-content"><ul><li>[ ] 用成本法重写第五节（空间测算）</li><li>[ ] 更新飞书文档 IeJ3dgMDToJjtZxfcnWchaNrnGh</li><li>[ ] 写清楚：现有产能、后续产能规划（多少吨）、各项成本</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>关键数据 </div>
+  
+  <div class="card-content"><ul><li>中巨芯 688549，市值 248亿（2026-05-15），YTD +84%</li><li>2025营收 11.67亿（湿化学品 8.79亿 + 特气 2.89亿），毛利率 15.71%</li><li>Q1 2026 营收 3.66亿 YoY +35%</li><li>电子级HF产能：5.2万吨（现有）+ 3.8万吨（在建）= 9万吨总规划</li><li>AHF当前约 1.48万/吨，YTD +25%，韩国进口中国AHF +40%</li><li>大基金持股 26.40%，巨化持股 26.40%</li><li>客户：中芯国际、台积电、长江存储、华虹</li></ul></div>
+</div><div class="glass-card" style="animation:fadeUp 0.4s var(--ease) both">
+  <div class="card-title"><span class="emoji">📌</span>文件位置 </div>
+  
+  <div class="card-content"><ul><li>飞书文档：https://www.feishu.cn/docx/IeJ3dgMDToJjtZxfcnWchaNrnGh（5号机器人文件夹 Oi9sf2iESlke7Td5vEAc5dsBngb）</li><li>本地报告：~/workspace/data/reports/sh688549/report_b_v1_20260516.md</li><li>定价卡：~/workspace/data/pricing_cards/sh688549/pricing_card_20260516.md</li><li>穷举清单：~/workspace/data/exhaustion/sh688549/latest.md</li><li>原始数据：~/workspace/data/raw/sh688549/</li></ul></div>
+</div></div></div>
+
+  <div class="footer">每日进化日报 · OpenClaw · 2026.05.16</div>
+</div>
+
+<script>(function() {
+  const canvas = document.getElementById('neuralCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [], animRunning = true;
+  const CFG = { count: 40, connectDist: 130, speed: 0.35, drift: 0.12, attractCX: 0.5, nodeR: 2, lineAlpha: 0.05 };
+  const colors = ['#BF5AF2','#0A84FF','#FF375F','#64D2FF','#30D158','#FF9F0A'];
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random()*W; this.y = Math.random()*H;
+      this.vx = (Math.random()-0.5)*CFG.speed;
+      this.vy = (Math.random()-0.5)*CFG.speed;
+      this.color = colors[Math.floor(Math.random()*colors.length)];
+      this.alpha = 0.3 + Math.random()*0.5;
+      this.phase = Math.random()*Math.PI*2;
+      this.flicker = 0.9 + Math.random()*0.1;
+    }
+    update(t) {
+      const cx = W*CFG.attractCX, cy = H*0.35;
+      const dx = cx-this.x, dy = cy-this.y;
+      const distC = Math.sqrt(dx*dx+dy*dy)+1;
+      this.ax = (dx/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.ay = (dy/distC)*0.012 + (Math.random()-0.5)*CFG.drift*0.1;
+      this.vx = (this.vx+this.ax)*0.96;
+      this.vy = (this.vy+this.ay)*0.96;
+      const spd = Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+      if (spd > CFG.speed) { this.vx=(this.vx/spd)*CFG.speed; this.vy=(this.vy/spd)*CFG.speed; }
+      this.x += this.vx; this.y += this.vy;
+      if (this.x<0) this.x=W; if (this.x>W) this.x=0;
+      if (this.y<0) this.y=H; if (this.y>H) this.y=0;
+      this.flicker = 0.88+Math.sin(t*0.001+this.phase)*0.12;
+    }
+    draw() {
+      ctx.save();
+      ctx.globalAlpha = this.alpha*this.flicker;
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 10; ctx.shadowColor = this.color;
+      ctx.beginPath(); ctx.arc(this.x,this.y,CFG.nodeR,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+  function drawConn() {
+    ctx.save();
+    for (let i=0; i<particles.length; i++) {
+      for (let j=i+1; j<particles.length; j++) {
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d = Math.sqrt(dx*dx+dy*dy);
+        if (d < CFG.connectDist) {
+          const t = 1-d/CFG.connectDist;
+          ctx.globalAlpha = CFG.lineAlpha*t*2.5*particles[i].flicker;
+          ctx.strokeStyle = particles[i].color; ctx.lineWidth = t*1.2;
+          ctx.beginPath(); ctx.moveTo(particles[i].x,particles[i].y); ctx.lineTo(particles[j].x,particles[j].y); ctx.stroke();
+        }
+      }
+    }
+    ctx.restore();
+  }
+  function resize() { W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+  function init() { resize(); particles=[]; for(let i=0;i<CFG.count;i++) particles.push(new Particle()); }
+  function loop(t) {
+    if (!animRunning) return;
+    ctx.clearRect(0,0,W,H); drawConn();
+    for (const p of particles) { p.update(t); p.draw(); }
+    requestAnimationFrame(loop);
+  }
+  document.addEventListener('visibilitychange', () => { animRunning=!document.hidden; if(animRunning) requestAnimationFrame(loop); });
+  window.addEventListener('resize', resize);
+  init(); requestAnimationFrame(loop);
+})();</script>
+<script>(function() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  btn.textContent = saved === 'dark' ? '☀️' : '🌙';
+  btn.addEventListener('click', function() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    btn.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+})();</script>
+</body>
+</html>
